@@ -11,3 +11,7 @@
 | 20373969 | 刘子奇 |
 
 选题：家庭服务机器人
+
+## 项目开发协作规范
+
+[项目开发协作流程](http://gitlab.oo.buaa.edu.cn/2023_embedded_software/tuesday/team03-project/-/wikis/项目开发协作流程)
