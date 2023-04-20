@@ -1,0 +1,5 @@
+<launch>
+    <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping">
+        <param name="base_frame" value="base_footprint" />
+    </node>
+</launch>
