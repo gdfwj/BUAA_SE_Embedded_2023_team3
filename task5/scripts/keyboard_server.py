@@ -2,12 +2,39 @@
 # coding=utf-8
 import rospy
 import sys
+import tty, termios
 from geometry_msgs.msg import Twist
 from std_srvs.srv import Trigger, TriggerRequest, TriggerResponse
 
 '''
+    作者：高渤宇
+    时间: 2023/3/31
     keyboad control model
+    键盘控制模块，服务名为'/control/keyboard'
 '''
+
+def readchar():
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    try:
+        tty.setraw(sys.stdin.fileno())
+        ch = sys.stdin.read(1)
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+    return ch
+
+def readkey(getchar_fn = None):
+    getchar = getchar_fn or readchar
+    c1 = getchar()
+    if ord(c1) != 0x1b:
+        return c1
+    c2  = getchar()
+    if ord(c2) != 0x5b:
+        return c1
+    c3 = getchar()
+    return chr(0x10 + ord(c3) - 65)
+
+
 class KeyboardControl:
     def __init__(self):
         self.pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
@@ -33,11 +60,11 @@ class KeyboardControl:
         self.pub.publish(self.move_cmd)
 
     def turn_left(self):
-        self.move_cmd.angular.z -= self.z
+        self.move_cmd.angular.z += self.z
         self.pub.publish(self.move_cmd)
 
     def turn_right(self):
-        self.move_cmd.angular.z += self.z
+        self.move_cmd.angular.z -= self.z
         self.pub.publish(self.move_cmd)
 
     def stop(self):
@@ -62,7 +89,8 @@ def handle_keyboard_control(req):
     print("------------- \n")
 
     while not rospy.is_shutdown():
-        key = sys.stdin.read(1)
+        key =  readkey()
+        print(key)
         if key == 'w':
             control.move_forward()
         elif key == 's':

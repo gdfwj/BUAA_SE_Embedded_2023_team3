@@ -35,7 +35,7 @@
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
 
 
-    <!-- <node pkg="embed_task5" name="keyboard_server" type="keyboard_server.py" /> -->
     <node pkg="embed_task5" name="map_create" type="map_create.py" />
+    <!-- <node pkg="embed_task5" name="keyboard_server" type="keyboard_server.py" /> -->
 
 </launch>

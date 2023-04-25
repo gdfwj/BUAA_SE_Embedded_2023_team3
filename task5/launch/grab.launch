@@ -11,8 +11,8 @@
     </node>
 
     <!-- rviz -->
-    <arg name="rvizconfig" default="$(find wpr_simulation)/rviz/grab.rviz" />
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+    <!-- <arg name="rvizconfig" default="$(find wpr_simulation)/rviz/grab.rviz" />
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" /> -->
 
     <!-- embed_task5 -->
     <node name="grap_server" pkg="embed_task5" type="grap_server.py" />

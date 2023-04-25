@@ -82,14 +82,14 @@
   <!-- <node pkg="waterplus_map_tools" type="wp_manager" name="wp_manager" output="screen" />
   <node pkg="waterplus_map_tools" type="wp_navi_server" name="wp_navi_server" output="screen" /> -->
 
-  <node pkg="wpb_home_behaviors" type="wpb_home_grab_server" name="wpb_home_grab_server" />
+  <!-- <node pkg="wpb_home_behaviors" type="wpb_home_grab_server" name="wpb_home_grab_server" />
   <node pkg="wpb_home_behaviors" type="wpb_home_grab_action" name="wpb_home_grab_action">
     <rosparam file="$(find wpb_home_bringup)/config/wpb_home.yaml" command="load" />
   </node>
   <node pkg="wpb_home_behaviors" type="wpb_home_objects_3d" name="wpb_home_objects_3d"
     output="screen">
     <param name="topic" type="string" value="/kinect2/sd/points" />
-  </node>
+  </node> -->
 
   <!-- <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping">
     <param name="base_frame" value="base_footprint"/>

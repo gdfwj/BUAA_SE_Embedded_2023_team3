@@ -5,7 +5,7 @@
         args="$(find wpr_simulation)/maps/map.yaml" />
 
     <!--- Run AMCL -->
-    <include file="$(find wpb_home_tutorials)/nav_lidar/amcl_omni.launch" />
+    <!-- <include file="$(find wpb_home_tutorials)/nav_lidar/amcl_omni.launch" /> -->
 
     <!--- Run move base -->
     <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
@@ -27,10 +27,10 @@
 
     <!-- Map tools  -->
     <node pkg="waterplus_map_tools" type="wp_manager" name="wp_manager" output="screen" />
-    <node pkg="waterplus_map_tools" type="wp_navi_server" name="wp_navi_server" output="screen" />
+    <!-- <node pkg="waterplus_map_tools" type="wp_navi_server" name="wp_navi_server" output="screen" /> -->
 
     <!-- rviz -->
-    <arg name="rvizconfig" default="$(find wpr_simulation)/rviz/map_tool.rviz" />
+    <arg name="rvizconfig" default="$(find wpr_simulation)/rviz/nav.rviz" />
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
 
 </launch>

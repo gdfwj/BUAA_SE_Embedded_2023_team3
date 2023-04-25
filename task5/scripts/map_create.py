@@ -37,15 +37,14 @@ def mapCreate(req):
         print('request failed')
     
     rospy.loginfo("保存地图")
+    time.sleep(1)
     os.system('rosrun map_server map_saver -f map')
-    time.sleep(10)
+    time.sleep(1)
     thispath = os.path.abspath(__file__)
     dirpath = os.path.split(thispath)[0]
     savepath = os.path.join(dirpath, '../../wpr_simulation/maps/')
     os.system("mv ~/map.yaml  {}".format(savepath))
     os.system("mv ~/map.pgm  {}".format(savepath))
-    
-    input()
 
 
 if __name__ == '__main__':
