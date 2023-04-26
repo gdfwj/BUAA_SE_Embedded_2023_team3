@@ -17,9 +17,12 @@
 import rospy
 import actionlib
 from actionlib import SimpleActionClient
+import os
+import multiprocessing
 from waterplus_map_tools.srv import GetNumOfWaypoints, GetWaypointByIndex, GetWaypointByName
 from embed_task5.srv import RunNavigator
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
+from std_msgs.msg import String
 
 class Singleton(object):
     def __init__(self, cls):
@@ -52,11 +55,53 @@ class Waypoints:
             self.points.append(srvl)
             self.dict[name] = srvl
     def getWaypointByName(self, target):
+        rospy.wait_for_service("waterplus/get_num_waypoint")
+        cliGetNum = rospy.ServiceProxy(
+            "waterplus/get_num_waypoint", GetNumOfWaypoints)
+        cliGetWPName = rospy.ServiceProxy(
+            "waterplus/get_waypoint_name", GetWaypointByName)
+        srvNum = cliGetNum.call()
+        rospy.wait_for_service("waterplus/get_waypoint_index")
+        cliGetWPIndex = rospy.ServiceProxy(
+            "waterplus/get_waypoint_index", GetWaypointByIndex)
+        srvl = 0
+        self.sum = srvNum.num
+        self.points = []
+        self.dict = {}
+        for i in range(srvNum.num):
+            srvl = cliGetWPIndex(i)
+            name = srvl.name
+            self.points.append(srvl)
+            self.dict[name] = srvl
         return self.dict[target]
     def getNames(self):
+        rospy.wait_for_service("waterplus/get_num_waypoint")
+        cliGetNum = rospy.ServiceProxy(
+            "waterplus/get_num_waypoint", GetNumOfWaypoints)
+        cliGetWPName = rospy.ServiceProxy(
+            "waterplus/get_waypoint_name", GetWaypointByName)
+        srvNum = cliGetNum.call()
+        rospy.wait_for_service("waterplus/get_waypoint_index")
+        cliGetWPIndex = rospy.ServiceProxy(
+            "waterplus/get_waypoint_index", GetWaypointByIndex)
+        srvl = 0
+        self.sum = srvNum.num
+        self.points = []
+        self.dict = {}
+        for i in range(srvNum.num):
+            srvl = cliGetWPIndex(i)
+            name = srvl.name
+            self.points.append(srvl)
+            self.dict[name] = srvl
         return self.dict.keys()
 
 def navigation(req):
+    def launch_detection():
+        os.system("rosrun embed_task5 detect_stop.py")
+
+    p = multiprocessing.Process(target=launch_detection)
+    
+    
     target = req.target
     srvl = Waypoints().getWaypointByName(target)
     ac = SimpleActionClient("move_base", MoveBaseAction)
@@ -66,7 +111,13 @@ def navigation(req):
     goal.target_pose.header.stamp = rospy.Time.now()
     goal.target_pose.pose = srvl.pose
     ac.send_goal(goal)
+    p.start()
     result = ac.wait_for_result()
+    if p.is_alive():
+        p.terminate()
+        result = True
+    else:
+        result = False
     if result:
         rospy.logwarn("arrived at " + srvl.name)
         s = {"success": True, "message": "arrived at " + srvl.name}
