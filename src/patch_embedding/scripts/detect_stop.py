@@ -13,8 +13,8 @@ if __name__=="__main__":
     time=0
 
     while True:
-        data = rospy.wait_for_message("cmd_vel", Twist,  queue_size=10)
-        if data.linear.x == 0 and data.linear.y == 0 and data.linear.z == 0 and data.angular.x == 0 and data.angular.y == 0 and data.angular.z == 0: 
+        data = rospy.wait_for_message("cmd_vel", Twist,  queue_size=10, timeout=2)
+        if  data == None or (data.linear.x == 0 and data.linear.y == 0 and data.linear.z == 0 and data.angular.x == 0 and data.angular.y == 0 and data.angular.z == 0): 
             time+=1
             if time>10: # 超时
                 pose = rospy.wait_for_message("robot_pose", Pose)
