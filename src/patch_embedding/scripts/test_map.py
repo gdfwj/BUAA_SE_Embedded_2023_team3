@@ -7,7 +7,7 @@
 用于测试建图
 """
 import rospy
-from embed_task5.srv import RunMapCreator
+from patch_embedding.srv import RunMapCreator
 
 def test1():
         rospy.wait_for_service('/control/create_map')
