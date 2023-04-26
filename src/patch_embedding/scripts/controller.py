@@ -14,14 +14,14 @@ import rospy
 import psutil
 import tkinter
 from std_srvs.srv import Trigger, TriggerRequest
-from embed_task5.srv import RunNavigator
+from patch_embedding.srv import RunNavigator
 
 
 class Controller:
     def __init__(self):
 
         def launch_simulation():
-            os.system("roslaunch embed_task5 init.launch")
+            os.system("roslaunch patch_embedding init.launch")
             pass
 
         p = multiprocessing.Process(target=launch_simulation)
@@ -76,7 +76,7 @@ class Controller:
     def create_map(self):
 
         def t():
-            os.system("roslaunch embed_task5 create_map.launch")
+            os.system("roslaunch patch_embedding create_map.launch")
 
         rospy.loginfo("加载建图节点")
         p = multiprocessing.Process(target=t)
@@ -97,10 +97,10 @@ class Controller:
     def navigation(self):
 
         def t1():   # 进行导航的准备
-            os.system("roslaunch embed_task5 navigation.launch")
+            os.system("roslaunch patch_embedding navigation.launch")
 
         def t2():   # 开始导航
-            os.system("rosrun embed_task5 navigation_by_name.py")
+            os.system("rosrun patch_embedding navigation_by_name.py")
 
         rospy.loginfo("加载导航节点")
         p1 = multiprocessing.Process(target=t1)
@@ -126,7 +126,7 @@ class Controller:
     def grab(self):
 
         def t():
-            os.system("roslaunch embed_task5 grab.launch")
+            os.system("roslaunch patch_embedding grab.launch")
 
         rospy.loginfo("加载机械臂节点")
         p = multiprocessing.Process(target=t)

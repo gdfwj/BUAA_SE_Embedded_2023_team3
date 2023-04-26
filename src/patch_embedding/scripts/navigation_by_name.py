@@ -18,7 +18,7 @@ import rospy
 import actionlib
 from actionlib import SimpleActionClient
 from waterplus_map_tools.srv import GetNumOfWaypoints, GetWaypointByIndex, GetWaypointByName
-from embed_task5.srv import RunNavigator
+from patch_embedding.srv import RunNavigator
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 
 class Singleton(object):

@@ -6,7 +6,7 @@
     用于测试导航客户端
 """
 import rospy
-from embed_task5.srv import RunNavigator
+from patch_embedding.srv import RunNavigator
 from navigation_by_name import Waypoints
 
 

@@ -110,8 +110,8 @@
   </node>
   <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" /> -->
 
-  <!-- <node name="grap_server" pkg="embed_task5" type="grap_server.py" />
-  <node name="navigation_by_name" pkg="embed_task5" type="navigation_by_name.py" />
-  <node pkg="embed_task5" name="map_create" type="map_create.py" /> -->
+  <!-- <node name="grap_server" pkg="patch_embedding" type="grap_server.py" />
+  <node name="navigation_by_name" pkg="patch_embedding" type="navigation_by_name.py" />
+  <node pkg="patch_embedding" name="map_create" type="map_create.py" /> -->
 
 </launch>
