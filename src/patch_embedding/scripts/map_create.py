@@ -12,7 +12,7 @@
 分别表示启动建图，保存建图，结束建图,
 
 请注释掉wpb_scene_1中“Run the map server”语句再启动该节点
-清保证embed_task5和wpr_simulation已经都放在大项目的src目录下
+清保证patch_embedding和wpr_simulation已经都放在大项目的src目录下
 请保证在~/ 即主目录下没有map.yaml和map.pgm，以防被覆盖
 """
 
