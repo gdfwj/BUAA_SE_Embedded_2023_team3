@@ -1,0 +1,17 @@
+<launch>
+    <!-- Map tools  -->
+    <!-- <node pkg="waterplus_map_tools" type="wp_manager" name="wp_manager" output="screen" />
+    <node pkg="waterplus_map_tools" type="wp_navi_server" name="wp_navi_server" output="screen" /> -->
+
+    <!-- gmapping -->
+    <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping">
+        <param name="base_frame" value="base_footprint"/>
+    </node>
+    
+    <!-- rviz -->
+    <arg name="rvizconfig" default="$(find wpr_simulation)/rviz/slam.rviz" />
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+
+    <!-- <node pkg="patch_embedding" name="keyboard_server" type="keyboard_server.py" /> -->
+
+</launch>
