@@ -23,13 +23,15 @@ class Controller:
 
     def __init__(self):
 
-        if params['simulate']:
-            def launch_simulation():
+        def launch_init():
+            if params['simulate']:
                 os.system("roslaunch patch_embedding sim_init.launch")
+            else:
+                os.system("roslaunch patch_embedding robot_init.launch")
 
-            p = multiprocessing.Process(target=launch_simulation)
-            p.start()
-            self.sim_init_pid = p.pid
+        p = multiprocessing.Process(target=launch_init)
+        p.start()
+        self.init_pid = p.pid
 
         rospy.init_node("controller")
         for key in params:
@@ -95,7 +97,7 @@ class Controller:
 
     def exit(self):
         if params['simulate']:
-            terminate_process(self.sim_init_pid)
+            terminate_process(self.init_pid)
         if params['use_tkinter']:
             tkinterUI.window.destroy()
 
