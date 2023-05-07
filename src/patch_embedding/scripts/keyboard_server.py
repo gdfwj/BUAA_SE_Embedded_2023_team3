@@ -73,7 +73,7 @@ class KeyboardControl:
         self.move_cmd.angular.z = 0
         self.pub.publish(self.move_cmd)
 
-def handle_keyboard_control(req):
+def handle_keyboard_control():
     control = KeyboardControl()
     rospy.loginfo("Keyboard control enabled")
 
@@ -113,11 +113,6 @@ def handle_keyboard_control(req):
             rospy.loginfo("Invalid Key Command!")
     return TriggerResponse()
 
-def keyboard_control_server():
-    rospy.init_node('keyboard_control')
-    s = rospy.Service('/control/keyboard', Trigger, handle_keyboard_control)
-    rospy.loginfo("Keyboard control server ready")
-    rospy.spin()
-
 if __name__ == '__main__':
-    keyboard_control_server()
+    rospy.init_node('keyboard_control')
+    handle_keyboard_control()
