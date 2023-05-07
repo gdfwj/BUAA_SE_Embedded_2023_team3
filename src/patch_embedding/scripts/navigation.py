@@ -18,11 +18,14 @@ import rospy
 import os
 import actionlib
 from actionlib import SimpleActionClient
+import os
+import multiprocessing
 from waterplus_map_tools.srv import GetNumOfWaypoints, GetWaypointByIndex, GetWaypointByName
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from patch_embedding.srv import Base, BaseResponse
-import multiprocessing
 from util import terminate_process
+from geometry_msgs.msg import Twist, Pose
+import tf
 
 class Singleton(object):
     def __init__(self, cls):
@@ -55,10 +58,45 @@ class Waypoints:
             self.points.append(srvl)
             self.dict[name] = srvl
     def getWaypointByName(self, target):
+        rospy.wait_for_service("waterplus/get_num_waypoint")
+        cliGetNum = rospy.ServiceProxy(
+            "waterplus/get_num_waypoint", GetNumOfWaypoints)
+        cliGetWPName = rospy.ServiceProxy(
+            "waterplus/get_waypoint_name", GetWaypointByName)
+        srvNum = cliGetNum.call()
+        rospy.wait_for_service("waterplus/get_waypoint_index")
+        cliGetWPIndex = rospy.ServiceProxy(
+            "waterplus/get_waypoint_index", GetWaypointByIndex)
+        srvl = 0
+        self.sum = srvNum.num
+        self.points = []
+        self.dict = {}
+        for i in range(srvNum.num):
+            srvl = cliGetWPIndex(i)
+            name = srvl.name
+            self.points.append(srvl)
+            self.dict[name] = srvl
         return self.dict[target]
     def getNames(self):
+        rospy.wait_for_service("waterplus/get_num_waypoint")
+        cliGetNum = rospy.ServiceProxy(
+            "waterplus/get_num_waypoint", GetNumOfWaypoints)
+        cliGetWPName = rospy.ServiceProxy(
+            "waterplus/get_waypoint_name", GetWaypointByName)
+        srvNum = cliGetNum.call()
+        rospy.wait_for_service("waterplus/get_waypoint_index")
+        cliGetWPIndex = rospy.ServiceProxy(
+            "waterplus/get_waypoint_index", GetWaypointByIndex)
+        srvl = 0
+        self.sum = srvNum.num
+        self.points = []
+        self.dict = {}
+        for i in range(srvNum.num):
+            srvl = cliGetWPIndex(i)
+            name = srvl.name
+            self.points.append(srvl)
+            self.dict[name] = srvl
         return self.dict.keys()
-
 
 class Navigation:
     def __init__(self):
@@ -106,7 +144,7 @@ class Navigation:
         goal.target_pose.header.stamp = rospy.Time.now()
         goal.target_pose.pose = srvl.pose
         ac.send_goal(goal)
-        result = ac.wait_for_result()
+        result = self.wait(ac, srvl.pose)
         if result:
             rospy.loginfo("arrived at " + srvl.name)
             terminate_process(self.pid)
@@ -117,22 +155,45 @@ class Navigation:
             terminate_process(self.pid)
             terminate_process(self.map_server_pid)
             return BaseResponse("导航失败")
-            
-    # while True:
-    #     state = ac.get_state()
-    #     if state == actionlib.GoalStatus.SUCCEEDED:
-    #         rospy.loginfo("Goal succeeded!")
-    #         break
-    #     elif state == actionlib.GoalStatus.ABORTED:
-    #         rospy.loginfo("Goal aborted!")
-    #         break
-    #     elif state == actionlib.GoalStatus.PREEMPTED:
-    #         rospy.loginfo("Goal preempted!")
-    #         break
-    #     else:
-    #         rospy.loginfo("Goal is still active...")
-        return
 
+    def wait(self, ac, target_pose):
+        data = None
+        listener = tf.TransformListener()
+        time = 0
+        while True:
+            try:
+                data = rospy.wait_for_message("cmd_vel", Twist,  timeout=2)
+            except:
+                data=None
+                pass
+            rospy.logwarn(str(data))
+            rospy.logwarn("time"+str(time))
+            if  data == None or (zero(data.linear.x)and zero(data.linear.y) and zero(data.linear.z ) and zero(data.angular.x) and zero(data.angular.y) and zero(data.angular.z)): 
+                time+=1
+                
+                if time>5: # 超时
+                    trans = None
+                    ori = None
+                    try:
+                        (trans, ori) = listener.lookupTransform("map", "base_link", rospy.Time(0))
+                    except:
+                        pass
+                    rospy.logwarn(str(ori)+str(trans))
+                    rospy.logwarn(str(target_pose))
+                    if zero2(ori[0]-target_pose.orientation.x) and zero2(ori[1]-target_pose.orientation.y) and zero2(ori[2]-target_pose.orientation.z) and zero2(ori[3]-target_pose.orientation.w) and zero2(trans[0]-target_pose.position.x) and zero2(trans[1]-target_pose.position.y) and zero2(trans[2]-target_pose.position.z):
+                        return True
+                    else:
+                        ac.cancel_all_goals()
+                        return False
+            else:
+                time=0
+            rospy.sleep(1)
+
+def zero(x):
+    return abs(x)<1e-4
+
+def zero2(x):
+    return abs(x)<1
 
 if __name__ == '__main__':
     Navigation()
