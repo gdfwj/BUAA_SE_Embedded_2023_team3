@@ -84,5 +84,6 @@
   <node pkg="patch_embedding" name="create_map" type="create_map.py" />
   <node pkg="patch_embedding" name="navigation" type="navigation.py" />
   <node pkg="patch_embedding" name="grab" type="grab.py" />
+  <node pkg="patch_embedding" name="mark" type="mark.py" />
 
 </launch>

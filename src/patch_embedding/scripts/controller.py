@@ -46,7 +46,7 @@ class Controller:
         loginfo(resp.response)
 
     def create_map_save(self, map_id=None):
-        """结束建图，保存地图。服务中传入地图保存路径。
+        """结束建图，保存地图。需要传入地图id。
 
         Args:
             map_id (int): 地图ID
@@ -57,6 +57,28 @@ class Controller:
             map_id = tkinterUI.t.get()
         save_path = params['pkg_path'] + '/maps/map' + str(map_id)
         resp = client(save_path)
+        loginfo(resp.response)
+
+    def edit_mark(self, map_id=None):
+        """编辑航点。需传入地图id。
+
+        Args:
+            map_id (int): 地图ID
+        """
+        client = rospy.ServiceProxy('/control/mark/edit', Base)
+        rospy.wait_for_service('/control/mark/edit')
+        if params['use_tkinter'] and map_id == None:
+            map_id = tkinterUI.t.get()
+        map_path = params['pkg_path'] + '/maps/map' + str(map_id) + '.yaml'
+        resp = client(map_path)
+        loginfo(resp.response)
+    
+    def save_mark(self):
+        """保存航点。
+        """
+        client = rospy.ServiceProxy('/control/mark/save', Base)
+        rospy.wait_for_service('/control/mark/save')
+        resp = client('save')
         loginfo(resp.response)
 
     def navigation_init(self, map_id=None):
@@ -73,11 +95,11 @@ class Controller:
         resp = client(map_path)
         loginfo(resp.response)
 
-    def navigation_ready(self):
-        client = rospy.ServiceProxy('/control/navigation/ready', Base)
-        rospy.wait_for_service('/control/navigation/ready')
-        resp = client('start')
-        loginfo(resp.response)
+    # def navigation_ready(self):
+    #     client = rospy.ServiceProxy('/control/navigation/ready', Base)
+    #     rospy.wait_for_service('/control/navigation/ready')
+    #     resp = client('start')
+    #     loginfo(resp.response)
 
     def navigation_begin(self, dst=None):
         client = rospy.ServiceProxy('/control/navigation/begin', Base)
@@ -96,8 +118,7 @@ class Controller:
         loginfo(resp.response)
 
     def exit(self):
-        if params['simulate']:
-            terminate_process(self.init_pid)
+        terminate_process(self.init_pid)
         if params['use_tkinter']:
             tkinterUI.window.destroy()
 
@@ -105,7 +126,7 @@ class Controller:
 class TkinterUI:
     def __init__(self, controller: Controller):
         self.window = tkinter.Tk()
-        self.window.geometry('500x400')
+        self.window.geometry('400x500')
         frame = tkinter.Frame(self.window)
         frame.pack(fill='both', expand='yes')
 
@@ -113,9 +134,13 @@ class TkinterUI:
         b1.pack()
         b2 = tkinter.Button(frame,text="保存地图",command=controller.create_map_save)
         b2.pack()
+        b6 = tkinter.Button(frame,text="编辑航点",command=controller.edit_mark)
+        b6.pack()
+        b7 = tkinter.Button(frame,text="保存航点",command=controller.save_mark)
+        b7.pack()
         b3 = tkinter.Button(frame,text="校准导航",command=controller.navigation_init)
         b3.pack()
-        b3 = tkinter.Button(frame,text="导航到目标点",command=controller.navigation_begin,)
+        b3 = tkinter.Button(frame,text="导航到目标点",command=controller.navigation_begin)
         b3.pack()
         b4 = tkinter.Button(frame,text="抓取",command=controller.grab)
         b4.pack()

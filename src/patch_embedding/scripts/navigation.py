@@ -84,13 +84,15 @@ class Navigation:
         p.start()
         self.map_server_pid = p.pid
 
-        if rospy.get_param("simulate"):
-            def t():
+        def t():
+            if rospy.get_param("simulate"):
                 os.system("roslaunch patch_embedding sim_navigation.launch")
+            else:
+                os.system("roslaunch patch_embedding robot_navigation.launch")
                 
-            p = multiprocessing.Process(target=t)
-            p.start()
-            self.pid = p.pid
+        p = multiprocessing.Process(target=t)
+        p.start()
+        self.pid = p.pid
         return BaseResponse("开始校准")
         
     
