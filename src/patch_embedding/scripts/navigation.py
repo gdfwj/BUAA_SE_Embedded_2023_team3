@@ -16,6 +16,7 @@
 
 import rospy
 import os
+import time as ti
 import actionlib
 from actionlib import SimpleActionClient
 import os
@@ -159,18 +160,23 @@ class Navigation:
     def wait(self, ac, target_pose):
         data = None
         listener = tf.TransformListener()
+        last_trans, last_ori = None, None
+        try:
+            (last_trans, last_ori) = listener.lookupTransform("map", "base_link", rospy.Time(0))
+        except: 
+            pass
+        ti.sleep(1)
         time = 0
         while True:
+            (now_trans, now_ori) = None, None
             try:
-                data = rospy.wait_for_message("cmd_vel", Twist,  timeout=2)
+                (now_trans, now_ori) = listener.lookupTransform("map", "base_link", rospy.Time(0))
             except:
-                data=None
                 pass
-            rospy.logwarn(str(data))
+            rospy.logwarn(str(now_trans))
             rospy.logwarn("time"+str(time))
-            if  data == None or (zero(data.linear.x)and zero(data.linear.y) and zero(data.linear.z ) and zero(data.angular.x) and zero(data.angular.y) and zero(data.angular.z)): 
+            if  now_trans == None or last_trans == None or (zero(now_trans[0]-last_trans[0]) and zero(now_trans[1]-last_trans[1]) and zero(now_trans[2]-last_trans[2])): 
                 time+=1
-                
                 if time>5: # 超时
                     trans = None
                     ori = None
@@ -187,6 +193,7 @@ class Navigation:
                         return False
             else:
                 time=0
+            last_trans, last_ori = now_trans, now_ori
             rospy.sleep(1)
 
 def zero(x):
