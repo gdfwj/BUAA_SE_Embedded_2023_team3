@@ -1,22 +1,16 @@
 <!-- 物品抓取 -->
 <launch>
 
-    <include file="$(find wpb_home_bringup)/launch/minimal.launch" />
+    <!-- Run grab monitor -->
+    <include file="$(find wpb_home_behaviors)/launch/grab_monitor.launch" />
 
-
-    <node pkg="wpb_home_behaviors" type="wpb_home_grab_server" name="wpb_home_grab_server" />
-    <node pkg="wpb_home_behaviors" type="wpb_home_grab_action" name="wpb_home_grab_action">
-        <rosparam file="$(find wpb_home_bringup)/config/wpb_home.yaml" command="load" />
-    </node>
-    <node pkg="wpb_home_behaviors" type="wpb_home_objects_3d" name="wpb_home_objects_3d"
-        output="screen">
+    <node pkg="wpb_home_behaviors" type="wpb_home_grab_server" name="wpb_home_grab_server">
+        <param name="start" type="bool" value="false" />
         <rosparam file="$(find wpb_home_bringup)/config/wpb_home.yaml" command="load" />
     </node>
 
-    <!---
-    Run Kinect -->
-    <!--************************
-    kinect ************************-->
+    <!--- Run Kinect -->
+    <!--************************ kinect ************************-->
     <arg name="base_name" default="kinect2" />
     <arg name="sensor" default="" />
     <arg name="publish_tf" default="false" />
@@ -26,8 +20,7 @@
     <arg name="use_png" default="false" />
     <arg name="jpeg_quality" default="90" />
     <arg name="png_level" default="1" />
-    <arg name="depth_method" default="cpu" /><!---
-    default/cpu -->
+    <arg name="depth_method" default="cpu" /><!--- default/cpu -->
     <arg name="depth_device" default="-1" />
     <arg name="reg_method" default="cpu" />
     <arg name="reg_device" default="-1" />
@@ -100,22 +93,18 @@
         <param name="worker_threads" type="int" value="$(arg worker_threads)" />
     </node>
 
-    <!-- qhd point cloud (960 x 540) -->
-    <node pkg="nodelet" type="nodelet" name="$(arg base_name)_points_xyzrgb_qhd"
+    <!-- sd point cloud (512 x 424) -->
+    <node pkg="nodelet" type="nodelet" name="$(arg base_name)_points_xyzrgb_sd"
         machine="$(arg machine)"
         args="load depth_image_proc/point_cloud_xyzrgb $(arg nodelet_manager)"
         respawn="$(arg respawn)">
-        <remap from="rgb/camera_info" to="$(arg base_name)/qhd/camera_info" />
-        <remap from="rgb/image_rect_color" to="$(arg base_name)/qhd/image_color_rect" />
-        <remap from="depth_registered/image_rect" to="$(arg base_name)/qhd/image_depth_rect" />
-        <remap from="depth_registered/points" to="$(arg base_name)/qhd/points" />
+        <remap from="rgb/camera_info" to="$(arg base_name)/sd/camera_info" />
+        <remap from="rgb/image_rect_color" to="$(arg base_name)/sd/image_color_rect" />
+        <remap from="depth_registered/image_rect" to="$(arg base_name)/sd/image_depth_rect" />
+        <remap from="depth_registered/points" to="$(arg base_name)/sd/points" />
         <param name="queue_size" type="int" value="$(arg queue_size)" />
     </node>
 
-    <!--************************ end ************************-->
-
-    <!-- rviz -->
-    <arg name="rvizconfig" default="$(find wpb_home_behaviors)/rviz/grab.rviz" />
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
 
 </launch>
+    
