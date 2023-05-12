@@ -115,7 +115,8 @@ class Navigation:
     def init(self, req):
         if self.pid != -1:
             return BaseResponse("正在校准")
-
+        os.system('cp ' + rospy.get_param("pkg_path") + '/config/waypoints.xml ~/waypoints.xml')
+        
         def map_server_process():
             os.system("rosrun map_server map_server " + req.request)
 
@@ -150,11 +151,15 @@ class Navigation:
             rospy.loginfo("arrived at " + srvl.name)
             terminate_process(self.pid)
             terminate_process(self.map_server_pid)
+            self.pid = -1
+            self.map_server_pid = -1
             return BaseResponse("导航成功")
         else:
             rospy.logerr("failed to arrive at" + srvl.name)
             terminate_process(self.pid)
             terminate_process(self.map_server_pid)
+            self.pid = -1
+            self.map_server_pid = -1
             return BaseResponse("导航失败")
 
     def wait(self, ac, target_pose):
