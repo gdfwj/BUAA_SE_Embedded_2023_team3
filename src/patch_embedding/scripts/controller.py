@@ -173,6 +173,8 @@ def loginfo(text):
     if params['use_tkinter']:
         tkinterUI.log(text)
 
+def getController():
+    return controller
 
 if __name__ == '__main__':
     pkg_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

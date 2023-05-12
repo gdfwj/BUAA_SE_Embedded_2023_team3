@@ -2,14 +2,23 @@ from utils.sqlHelper import SqlHelper
 from django.views import View
 from django.http import JsonResponse
 from datetime import datetime
+import asyncio
+import websockets
 PREFIX = "E:\\学习\\大三下\\软工\\项目开发\\"
 import sys
-sys.path.append('../../src/')
-# from patch_embedding.scripts.controller import Controller
 # 是否开启语音服务
 VOICE_ON = False
 # 当前正在标注航点的地图id
 Map_id_now = 1
+ip_address = 'ws://localhost:8765'
+import asyncio
+import websockets
+
+async def hello(uri, message):
+    async with websockets.connect(uri) as websocket:
+        await websocket.send(message)
+        recv_text = await websocket.recv()
+        print(recv_text)
 
 class ResetAll(View):
     def post(self, request):
@@ -56,8 +65,13 @@ class ShowAll(View):
 class Create_map(View):
     def post(self, request):
         res = {'code': 400, 'msg': '新建地图成功', 'data': []}
+        print("asdasd")
         # request = getRequest(request)
         try:
+            message = 'map/create/'
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            loop.run_until_complete(hello(ip_address, message))
             # TODO: 启动建图
             res['code'] = 200
         except Exception as e:
