@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 add_service_files(FILES
   Base.srv
+  Conn.srv
 )
 
 generate_messages(
