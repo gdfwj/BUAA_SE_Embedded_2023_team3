@@ -20,6 +20,13 @@ async def hello(uri, message):
         recv_text = await websocket.recv()
         print(recv_text)
 
+def webClient(message, *args):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    for arg in args:
+        message = message + ":" + arg
+    loop.run_until_complete(hello(ip_address, message))
+
 class ResetAll(View):
     def post(self, request):
         res = {'code': 400, 'msg': '恢复出厂设置成功', 'data': []}
@@ -65,13 +72,10 @@ class ShowAll(View):
 class Create_map(View):
     def post(self, request):
         res = {'code': 400, 'msg': '新建地图成功', 'data': []}
-        print("asdasd")
         # request = getRequest(request)
         try:
             message = 'map/create/'
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            loop.run_until_complete(hello(ip_address, message))
+            webClient(message)
             # TODO: 启动建图
             res['code'] = 200
         except Exception as e:
@@ -87,8 +91,12 @@ class Save_map(View):
         map_remark = request.get("map_remark")
         try:
             # TODO:
+            message = 'map/save/'
             sqlHelper = SqlHelper()
             sqlHelper.insert('tb_map', {"map_name":map_name, "map_remark":map_remark, "map_time":getNowTime()})
+            map_id = sqlHelper.select('tb_map', listnames=['map_id'], cond_dict={"map_name":map_name})
+            map_id = map_id[0]
+            webClient(message, map_id)
             res['code'] = 200
         except Exception as e:
             print(e)
@@ -137,6 +145,8 @@ class CreateMark(View):
         Map_id_now = map_id
         try:
             # TODO:
+            message = "mark/create/"
+            webClient(message)
             res['code'] = 200
         except Exception as e:
             print(e)
@@ -176,7 +186,8 @@ class Navigation(View):
     def post(self, request):
         res = {'code': 400, 'msg': '导航成功', 'data': []}
         request = getRequest(request)
-        label_id = int(request.get("label_id"))
+        # label_id = int(request.get("label_id"))
+        label_name = request.get("label_name")
         try:
             # TODO:
             res['code'] = 200

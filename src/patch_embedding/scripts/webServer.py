@@ -6,6 +6,8 @@
     服务端，与后端（客户端）交互，调用主控函数
 """
 import asyncio
+import re
+
 import websockets
 import controller
 #服务端ip地址、端口号
@@ -15,10 +17,16 @@ port = 8765
 #服务端响应函数
 async def echo(websocket, path):
     async for message in websocket:
+        print(message)
         if message=='map/create/':
-            print(message)
             controller.getController().create_map_start()
             message = "I got your message: {}".format(message)
+        elif re.match("map/save/:", message):
+            result = re.search("[0-9]+", message)
+            if result.group() == None:
+                message = "Wrong, please send map_id"
+                break
+            controller.getController().create_map_save(int(result.group()))
         await websocket.send(message)
 
 # 注册服务端
