@@ -17,51 +17,67 @@
             active-color="#13ce66"
             inactive-color="#FFABAB"
             active-text="人工标识"
-            inactive-text="语言控制">
+            inactive-text="语言控制"
+            @click.native="changeVoice">
           </el-switch>
         </el-col>
       </el-row>
     </el-header>
+
     <el-main>
+      <!--    地图部分-->
       <el-row>
-        <el-col :span="7" :gutter="20" v-for="(map, index) in maps" :key="map.mapId" style="padding-left: 4%">
-          <!--          地图card-->
+        <el-col :span="7" :gutter="20" v-for="(map, index) in maps" :key="map.map_id" style="padding-left: 4%">
+<!--          地图card-->
           <el-card
             shadow="hover"
             class="card"
             style="width: 100%; margin-left: 5%;
             padding-left: 5%; margin-bottom: 6px; margin-right: 5%"
-            @click.native="getServe(map.mapId)">
+            @click.native="getServe(map.map_id)">
             <el-row>
+<!--             地图图片-->
               <el-col>
-                <el-image :src="require(`@/assets/map.png`)" style="width: 100%"></el-image>
+                <el-image :src="require(`E://学习//大三下//软工//项目开发//`+ map.map_id + `.png`)" style="width: 100%"></el-image>
               </el-col>
             </el-row>
             <el-row style="padding-top: 10px">
+              <!--              地图名称、时间-->
               <el-col style="text-align: center">
-                <el-tag size="small" type="info" style="align-content: center">{{map.mapName}}</el-tag>
+                <el-tag size="small" style="align-content: center">{{map.map_name}}</el-tag>
+                <el-tag size="small" style="align-content: center">{{map.map_time}}</el-tag>
+              </el-col>
+            </el-row>
+            <!--            地图备注-->
+            <el-row style="padding-top: 10px">
+              <el-col style="text-align: center">
+                <el-tag type="info" style="align-content: center">{{map.map_remark}}</el-tag>
               </el-col>
             </el-row>
           </el-card>
         </el-col>
       </el-row>
-      <!--      具体服务操作-->
+
+<!--      具体服务操作-->
       <el-dialog title="执行服务" :visible.sync="dialogServe" width="60%">
 <!--        地图显示-->
         <el-row style="padding:5px; margin: 5px">
           <el-image
-            style="width: 70%; height: 70%; padding-left: 15%"
-            :src="require(`@/assets/map.png`)">
+            style="width: 50%; height: 50%; padding-left: 25%"
+            :src="require(`E://学习//大三下//软工//项目开发//`+ this.map_id + `.png`)">
           </el-image>
         </el-row>
         <!--          手动标识-->
         <div v-if="switchValue == true">
           <!--        功能选择-->
           <el-row  :gutter="0">
-            <el-col :span="7" style="padding-left: 5%">
-              <el-select v-model="value" placeholder="请选择功能">
+            <el-col :span="4" style="margin-top: 10px;padding-left: 50px">
+              <b>功能选择:</b>
+            </el-col>
+            <el-col :span="7" style="padding-left: 0">
+              <el-select v-model="value" placeholder="请选择功能" >
                 <el-option
-                  v-for="item in options"
+                  v-for="item in meNuOptions"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value">
@@ -69,36 +85,20 @@
               </el-select>
             </el-col>
           </el-row>
-          <!--        导航-->
+    <!--        导航-->
           <div v-if="value == 'label1'" style="text-align: center; align-content: center; align-items: center">
 
             <el-row style="padding-top: 20px">
-              <el-col :span="4">
-                初始位置：
-              </el-col>
-              <el-col :span="4">
-                <el-select
-                  v-model="navStartPoint"
-                  placeholder="初始位置"
-                  size="mini">
-                  <el-option
-                    v-for="item in optionsStart"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-              </el-col>
-              <el-col :span="4">
+              <el-col :span="4" style="margin-top: 3px;padding-left: 30px">
                 结束位置：
               </el-col>
               <el-col :span="4">
                 <el-select
                   v-model="navEndPoint"
                   placeholder="结束位置"
-                  size="mini">
+                 >
                   <el-option
-                    v-for="item in optionsEnd"
+                    v-for="item in pointsOptions"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value">
@@ -106,38 +106,23 @@
                 </el-select>
               </el-col>
               <el-col :span="4" style="float: right">
-                <el-button type="success" icon="el-icon-check" size="mini" circle @click="submitNav"></el-button>
+                <el-button type="success" @click="submitNav">开始导航</el-button>
               </el-col>
             </el-row>
           </div>
+<!--          抓取-->
           <div v-if="value == 'label2'" style="text-align: center; align-content: center; align-items: center">
               <el-row style="padding-top: 20px">
-                <el-col :span="4">
-                  初始位置：
-                </el-col>
-                <el-col :span="4">
-                  <el-select
-                    v-model="catchStartPoint"
-                    placeholder="初始位置"
-                    size="mini">
-                    <el-option
-                      v-for="item in optionsStart"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
-                </el-col>
-                <el-col :span="4">
+                <el-col :span="4" style="margin-top: 3px;padding-left: 30px">
                   目标位置：
                 </el-col>
                 <el-col :span="4">
                   <el-select
                     v-model="catchEndPoint"
                     placeholder="结束位置"
-                    size="mini">
+                    >
                     <el-option
-                      v-for="item in optionsEnd"
+                      v-for="item in pointsOptions"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value">
@@ -145,7 +130,7 @@
                   </el-select>
                 </el-col>
                 <el-col :span="4" style="float: right">
-                  <el-button type="success" icon="el-icon-check" size="mini" circle @click="submitNav"></el-button>
+                  <el-button type="warning" @click="submitFetch">开始取物</el-button>
                 </el-col>
               </el-row>
           </div>
@@ -159,8 +144,6 @@
           </el-row>
         </div>
 
-
-
       </el-dialog>
     </el-main>
   </el-container>
@@ -173,16 +156,13 @@ export default {
   name: 'Serve',
   data() {
     return {
-      maps:[{
-        mapId: 1,
-        mapName:'第一张地图',
-      }],
+      maps:[],
       inputString: '',
       dialogServe: false,
-      mapId: '1',
+      map_id: '1',
       value: '',
       switchValue: true,
-      options: [
+      meNuOptions: [
         {
           value: 'label1',
           label: '导航控制'
@@ -192,30 +172,9 @@ export default {
           label: '取物控制'
         }
       ],
-      navStartPoint: '当前位置',
-      optionsStart: [
-        {
-          value: 'start1',
-          label: '当前位置',
-        },
-        {
-          value: 'start2',
-          label: '航点1'
-        }
-      ],
-      navEndPoint: '当前位置',
-      optionsEnd: [
-        {
-          value: 'start1',
-          label: '当前位置',
-        },
-        {
-          value: 'start2',
-          label: '航点1'
-        }
-      ],
-      catchStartPoint: '当前位置',
-      catchEndPoint: '当前位置'
+      pointsOptions:[],
+      navEndPoint: '请选择结束位置',
+      catchEndPoint: '请选择结束位置'
     }
   },
   created() {
@@ -227,34 +186,130 @@ export default {
         name: 'Home'
       })
     },
-    getSRC(Id) {
-      return `@/assets/${{Id}}.png`
-    },
-    getServe(mapId) {
-      this.dialogServe = true
-      this.mapId = mapId
-    },
-    getMaps() {
-      return [
+    // get marks
+    getMarks(map_id) {
+      let x = {"map_id": map_id}
+      console.log(x)
+      this.$axios.post(`http://localhost:8000/mark/show/`, x)
+        .then(res => {
+          if (res.data.code == 400) {
+            this.$message.error(res.data.msg)
+          }
+          else {
+          this.pointsOptions = []
+            for (var i = 0; i < res.data.data.length; i+= 1) {
+              this.pointsOptions.push(
+                { label : res.data.data[i].label_name,
+                  value: res.data.data[i].label_id}
+              )
+            }
+          }
+        })
+      /*
+      var datas = [
         {
-          mapId:'1',
-          mapName:'map1',
+          label_id: 1,
+          label_name: '航点1',
+          label_remark: 'hello'
         },
         {
-          mapId:'2',
-          mapName:'map2',
-        },
-        {
-          mapId:'3',
-          mapName:'map3',
+          label_id: 2,
+          label_name: '航点2',
+          label_remark: 'hello 2'
         },
       ]
+      this.pointsOptions = []
+      for (var i = 0; i < datas.length; i+= 1) {
+        this.pointsOptions.push(
+          { label : datas[i].label_name,
+            value: String(datas[i].label_id)}
+        )
+      }
+       */
     },
+    getSRC(url) {
+      return url
+    },
+    getServe(map_id) {
+      this.dialogServe = true
+      this.map_id = map_id
+      this.getMarks(map_id)
+      this.initService(map_id)
+    },
+    // 初始化服务
+    initService(map_id) {
+      let x = {map_id: map_id}
+      this.$axios.post(`http://localhost:8000/service/init/`, x)
+        .then(res => {
+          if (res.data.code == 400) {
+            this.$message.error(res.data.msg)
+          }
+        })
+    },
+    //得到所有地图的基本信息
+    getMaps() {
+/*
+      this.maps = [
+        {
+          map_id: 1,
+          map_name: 'firmap',
+          map_time: 20230507,
+          map_remark: 'hello map!'
+        },
+      ]
+ */
+      this.$axios.post(`http://localhost:8000/map/showAll/`)
+        .then(res => {
+          if (res.data.code == 400) {
+            this.$message.error(res.data.msg)
+          }
+          else {
+            this.maps = res.data.data
+          }
+        })
+
+      return this.maps
+    },
+    // 导航
     submitNav() {
-      this.$message({
-        message: '成功提交导航任务请求',
-        type: 'success'
-      });
+      console.log(this.navEndPoint)
+      let x = {label_id: this.navEndPoint}
+      this.$axios.post(`http://localhost:8000/navigation/begin/`, x)
+        .then(res => {
+          if (res.data.code == 400) {
+            this.$message.error(res.data.msg)
+          }
+          else {
+            this.$message({
+              message: '成功提交导航任务请求',
+              type: 'success'
+            });
+          }
+        })
+    },
+    // 抓取
+    submitFetch() {
+      let x = {label_id: this.catchEndPoint}
+      this.$axios.post(`http://localhost:8000/object/fetch/`, x)
+        .then(res => {
+          if (res.data.code == 400) {
+            this.$message.error(res.data.msg)
+          }
+          else {
+            this.$message({
+              message: '成功提交导航任务请求',
+              type: 'success'
+            });
+          }
+        })
+    },
+    changeVoice() {
+      this.$axios.post(`http://localhost:8000/control/voice/`)
+        .then(res => {
+          if (res.data.map_id == 400) {
+            this.$message.error(res.data.msg)
+          }
+        })
     }
   },
 
