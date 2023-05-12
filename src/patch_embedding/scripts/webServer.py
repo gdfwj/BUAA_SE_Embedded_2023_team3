@@ -27,6 +27,18 @@ async def echo(websocket, path):
                 message = "Wrong, please send map_id"
                 break
             controller.getController().create_map_save(int(result.group()))
+            message = "I got your message: {}".format(message)
+        elif re.match("mark/create/:", message):
+            result = re.search("[0-9]+", message)
+            if result.group() == None:
+                message = "Wrong, please send map_id"
+                break
+            controller.getController().edit_mark(int(result.group()))
+            message = "I got your message: {}".format(message)
+        elif re.match("mark/save:", message):
+
+        else :
+            message = "Invalid message!!!"
         await websocket.send(message)
 
 # 注册服务端

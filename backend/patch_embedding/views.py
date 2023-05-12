@@ -10,7 +10,7 @@ import sys
 VOICE_ON = False
 # 当前正在标注航点的地图id
 Map_id_now = 1
-ip_address = 'ws://localhost:8765'
+ip_address = 'wss://192.168.71.129:8765'
 import asyncio
 import websockets
 
@@ -74,9 +74,9 @@ class Create_map(View):
         res = {'code': 400, 'msg': '新建地图成功', 'data': []}
         # request = getRequest(request)
         try:
+            # TODO: 启动建图
             message = 'map/create/'
             webClient(message)
-            # TODO: 启动建图
             res['code'] = 200
         except Exception as e:
             print(e)
@@ -146,7 +146,7 @@ class CreateMark(View):
         try:
             # TODO:
             message = "mark/create/"
-            webClient(message)
+            webClient(message, map_id)
             res['code'] = 200
         except Exception as e:
             print(e)
