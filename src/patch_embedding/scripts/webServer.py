@@ -13,7 +13,7 @@ from patch_embedding.srv import Conn
 import websockets
 import controller
 #服务端ip地址、端口号
-ip = 'localhost'
+ip = '10.193.215.78'
 port = 8765
 
 #消息格式：和前后端url匹配，
