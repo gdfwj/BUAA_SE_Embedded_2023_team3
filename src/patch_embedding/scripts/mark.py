@@ -23,11 +23,18 @@ class Mark:
 
     # 编辑航点
     def edit(self, req):
+        # 将当前地图的航点文件移到主目录
+        mark_path = rospy.get_param("pkg_path") + '/marks/waypoints' + req.request + '.xml'
+        if os.path.exists(mark_path):
+            os.system("cp " + mark_path + " ~/waypoints.xml")
+
         if self.pid != -1:
             return BaseResponse("正在标注")
 
+        map_path = rospy.get_param("pkg_path") + '/maps/map' + req.request + '.yaml'
+
         def map_server_process():
-            os.system("rosrun map_server map_server " + req.request)
+            os.system("rosrun map_server map_server " + map_path)
 
         p = multiprocessing.Process(target=map_server_process)
         p.start()
@@ -42,8 +49,9 @@ class Mark:
         return BaseResponse("开始编辑")
 
     def save(self, req):
+        mark_path = rospy.get_param("pkg_path") + '/marks/waypoints' + req.request + '.xml'
         os.system('rosrun waterplus_map_tools wp_saver')
-        os.system('mv ~/waypoints.xml ' + rospy.get_param("pkg_path") + '/config/waypoints.xml')
+        os.system('mv ~/waypoints.xml ' + mark_path)
 
         terminate_process(self.pid)
         terminate_process(self.map_server_pid)
