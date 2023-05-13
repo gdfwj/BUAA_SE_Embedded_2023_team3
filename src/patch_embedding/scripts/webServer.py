@@ -11,7 +11,7 @@ import re
 import websockets
 import controller
 #服务端ip地址、端口号
-ip = 'localhost'
+ip = '10.193.215.78'
 port = 8765
 #消息格式：和前后端url匹配，
 #服务端响应函数
@@ -35,7 +35,7 @@ async def echo(websocket, path):
                 break
             controller.getController().edit_mark(int(result.group()))
             message = "I got your message: {}".format(message)
-        elif re.match("mark/save:", message):
+        # elif re.match("mark/save:", message):
 
         else :
             message = "Invalid message!!!"
