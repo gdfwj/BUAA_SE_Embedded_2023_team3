@@ -191,8 +191,11 @@ class Navigation(View):
         # label_id = int(request.get("label_id"))
         label_name = request.get("label_name")
         try:
+            sqlHelper = SqlHelper()
+            results = sqlHelper.select("tb_label", listnames=["label_id"], cond_dict={"label_name":label_name})
+            label_id = int(results[0][0])
             message = "navigation/begin/"
-            webClient(message, label_name)
+            webClient(message, label_id)
             res['code'] = 200
         except Exception as e:
             print(e)
