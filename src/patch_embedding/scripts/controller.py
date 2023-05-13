@@ -44,8 +44,11 @@ class Controller:
     def web_callback(self, req):
         func_name = req.type
         id = req.id
+        arg = req.arg
         if id == 0:
             getattr(self, func_name)()
+        elif id == -1:
+            getattr(self, func_name)(arg)
         else:
             getattr(self, func_name)(id)
 

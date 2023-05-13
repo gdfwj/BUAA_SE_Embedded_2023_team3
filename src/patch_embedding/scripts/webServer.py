@@ -22,35 +22,35 @@ async def echo(websocket, path):
     async for message in websocket:
         print(message)
         if message=='map/create/':
-            resp = client("create_map_start", 0)
+            resp = client("create_map_start", 0, "")
             message = "I got your message: {}".format(message)
         elif re.match("map/save/:", message):
             result = re.search("[0-9]+", message)
             if result.group() == None:
                 message = "Wrong, please send map_id"
                 break
-            resp = client("create_map_save", int(result.group()))
+            resp = client("create_map_save", int(result.group()), "")
             message = "I got your message: {}".format(message)
         elif re.match("mark/create/:", message):
             result = re.search("[0-9]+", message)
             if result.group() == None:
                 message = "Wrong, please send map_id"
                 break
-            resp = client("edit_mark", int(result.group()))
+            resp = client("edit_mark", int(result.group()), "")
             message = "I got your message: {}".format(message)
         elif message == 'object/fetch/':
-            resp = client("grab", 0)
+            resp = client("grab", 0, "")
             message = "I got your message: {}".format(message)
         elif re.match("service/init/:", message):
             result = re.search("[0-9]+", message)
             if result.group() == None:
                 message = "Wrong, please send map_id"
                 break
-            resp = client("navigation_init", int(result.group()))
+            resp = client("navigation_init", int(result.group()), "")
             message = "I got your message: {}".format(message)
         elif re.match("navigation/begin/:", message):
-            label_name = message.split("navigation/begin/:")[1])
-            resp = client("navigation_begin")
+            label_name = message.split("navigation/begin/:")[1]
+            resp = client("navigation_begin", -1, label_name)
         else :
             message = "Invalid message!!!"
         await websocket.send(message)
