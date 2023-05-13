@@ -10,7 +10,7 @@ import sys
 VOICE_ON = False
 # 当前正在标注航点的地图id
 Map_id_now = 1
-ip_address = 'wss://192.168.71.129:8765'
+ip_address = 'ws://10.193.215.78:8765'
 import asyncio
 import websockets
 

@@ -11,13 +11,14 @@ import psutil
 import tkinter
 from std_srvs.srv import Trigger, TriggerRequest
 from std_msgs.msg import String
-from patch_embedding.srv import Base
+from patch_embedding.srv import Base, Conn
 from util import terminate_process
 
 
 params = {}
 controller = None
 tkinterUI = None
+
 
 class Controller:
 
@@ -36,6 +37,13 @@ class Controller:
         rospy.init_node("controller")
         for key in params:
             rospy.set_param(key, params[key])
+        
+        rospy.Service('/control/web', Conn, self.web_callback)
+
+    def web_callback(self, req):
+        func_name = req.type
+        id = req.id
+        getattr(self, func_name)(id)
 
     def create_map_start(self):
         """开始建图。
@@ -173,8 +181,6 @@ def loginfo(text):
     if params['use_tkinter']:
         tkinterUI.log(text)
 
-def start_webserver():
-    os.system("python3 webServer.py")
 
 if __name__ == '__main__':
     pkg_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

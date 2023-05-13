@@ -7,40 +7,49 @@
 """
 import asyncio
 import re
+import rospy
+from patch_embedding.srv import Conn
 
 import websockets
 import controller
 #服务端ip地址、端口号
 ip = '10.193.215.78'
 port = 8765
+class webServer:
+    def __init__(self, controller):
+        controller
 #消息格式：和前后端url匹配，
 #服务端响应函数
 async def echo(websocket, path):
     async for message in websocket:
         print(message)
         if message=='map/create/':
-            controller.getController().create_map_start()
+            resp = client("create_map_start", 0)
             message = "I got your message: {}".format(message)
         elif re.match("map/save/:", message):
             result = re.search("[0-9]+", message)
             if result.group() == None:
                 message = "Wrong, please send map_id"
                 break
-            controller.getController().create_map_save(int(result.group()))
+            resp = client("create_map_save", int(result.group()))
             message = "I got your message: {}".format(message)
         elif re.match("mark/create/:", message):
             result = re.search("[0-9]+", message)
             if result.group() == None:
                 message = "Wrong, please send map_id"
                 break
-            controller.getController().edit_mark(int(result.group()))
+            resp = client("edit_mark", int(result.group()))
             message = "I got your message: {}".format(message)
-        # elif re.match("mark/save:", message):
-
         else :
             message = "Invalid message!!!"
         await websocket.send(message)
 
-# 注册服务端
-asyncio.get_event_loop().run_until_complete(websockets.serve(echo, ip, port))
-asyncio.get_event_loop().run_forever()
+if __name__ == '__main__':
+    rospy.init_node("webServer")
+    client = rospy.ServiceProxy('/control/web', Conn)
+    rospy.wait_for_service('/control/web')
+    # 注册服务端
+    asyncio.get_event_loop().run_until_complete(websockets.serve(echo, ip, port))
+    asyncio.get_event_loop().run_forever()
+
+
