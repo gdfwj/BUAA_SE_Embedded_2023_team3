@@ -24,7 +24,7 @@ def webClient(message, *args):
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     for arg in args:
-        message = message + ":" + arg
+        message = message + ":" + str(arg)
     loop.run_until_complete(hello(ip_address, message))
 
 class ResetAll(View):
