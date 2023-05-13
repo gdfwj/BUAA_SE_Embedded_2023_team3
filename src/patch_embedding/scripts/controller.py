@@ -35,6 +35,7 @@ class Controller:
         self.init_pid = p.pid
 
         rospy.init_node("controller")
+        
         for key in params:
             rospy.set_param(key, params[key])
         
@@ -43,7 +44,10 @@ class Controller:
     def web_callback(self, req):
         func_name = req.type
         id = req.id
-        getattr(self, func_name)(id)
+        if id == 0:
+            getattr(self, func_name)()
+        else:
+            getattr(self, func_name)(id)
 
     def create_map_start(self):
         """开始建图。
@@ -77,16 +81,20 @@ class Controller:
         rospy.wait_for_service('/control/mark/edit')
         if params['use_tkinter'] and map_id == None:
             map_id = tkinterUI.t.get()
-        map_path = params['pkg_path'] + '/maps/map' + str(map_id) + '.yaml'
-        resp = client(map_path)
+        resp = client(str(map_id))
         loginfo(resp.response)
     
-    def save_mark(self):
-        """保存航点。
+    def save_mark(self, map_id=None):
+        """保存航点。需传入地图id
+
+        Args:
+            map_id (int): 地图ID
         """
         client = rospy.ServiceProxy('/control/mark/save', Base)
         rospy.wait_for_service('/control/mark/save')
-        resp = client('save')
+        if params['use_tkinter'] and map_id == None:
+            map_id = tkinterUI.t.get()
+        resp = client(str(map_id))
         loginfo(resp.response)
 
     def navigation_init(self, map_id=None):
