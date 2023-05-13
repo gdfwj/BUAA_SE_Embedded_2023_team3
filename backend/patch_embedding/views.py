@@ -74,7 +74,6 @@ class Create_map(View):
         res = {'code': 400, 'msg': '新建地图成功', 'data': []}
         # request = getRequest(request)
         try:
-            # TODO: 启动建图
             message = 'map/create/'
             webClient(message)
             res['code'] = 200
@@ -90,7 +89,6 @@ class Save_map(View):
         map_name = request.get("map_name")
         map_remark = request.get("map_remark")
         try:
-            # TODO:
             message = 'map/save/'
             sqlHelper = SqlHelper()
             sqlHelper.insert('tb_map', {"map_name":map_name, "map_remark":map_remark, "map_time":getNowTime()})
@@ -144,7 +142,6 @@ class CreateMark(View):
         map_id = int(request.get("map_id"))
         Map_id_now = map_id
         try:
-            # TODO:
             message = "mark/create/"
             webClient(message, map_id)
             res['code'] = 200
@@ -202,7 +199,8 @@ class Fetch(View):
         request = getRequest(request)
         label_id = int(request.get("label_id"))
         try:
-            # TODO:
+            message = "object/fetch/"
+            webClient(message)
             res['code'] = 200
         except Exception as e:
             print(e)

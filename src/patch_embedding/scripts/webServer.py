@@ -15,9 +15,7 @@ import controller
 #服务端ip地址、端口号
 ip = 'localhost'
 port = 8765
-class webServer:
-    def __init__(self, controller):
-        controller
+
 #消息格式：和前后端url匹配，
 #服务端响应函数
 async def echo(websocket, path):
@@ -40,6 +38,9 @@ async def echo(websocket, path):
                 break
             resp = client("edit_mark", int(result.group()))
             message = "I got your message: {}".format(message)
+        elif message == 'object/fetch/':
+            resp = client("grab", 0)
+            message = "I got your message: {}".format(message)
         else :
             message = "Invalid message!!!"
         await websocket.send(message)
@@ -51,5 +52,3 @@ if __name__ == '__main__':
     # 注册服务端
     asyncio.get_event_loop().run_until_complete(websockets.serve(echo, ip, port))
     asyncio.get_event_loop().run_forever()
-
-
