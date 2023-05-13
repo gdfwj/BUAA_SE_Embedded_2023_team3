@@ -1,4 +1,2 @@
-import re
-message = 'map/save/:1123'
-result = re.search("[0-9]+", message)
-print(result.group())
+message = "navigation/begin/:asdasd"
+print(message.split("navigation/begin/:")[1])

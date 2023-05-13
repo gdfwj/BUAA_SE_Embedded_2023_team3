@@ -11,6 +11,7 @@ VOICE_ON = False
 # 当前正在标注航点的地图id
 Map_id_now = 1
 ip_address = 'ws://10.193.215.78:8765'
+DEBUG = True
 import asyncio
 import websockets
 
@@ -21,6 +22,8 @@ async def hello(uri, message):
         print(recv_text)
 
 def webClient(message, *args):
+    if DEBUG:
+        return
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     for arg in args:
@@ -36,6 +39,7 @@ class ResetAll(View):
             sqlHelper = SqlHelper()
             # sqlHelper.insert('cl_class', {'name': class_name})
             sqlHelper.delete('tb_label')
+            sqlHelper.delete('tb_map')
             res['code'] = 200
         except Exception as e:
             print(e)
@@ -172,7 +176,8 @@ class ServiceInit(View):
         request = getRequest(request)
         map_id = int(request.get("map_id"))
         try:
-            # TODO:
+            message = "service/init/"
+            webClient(message, map_id)
             res['code'] = 200
         except Exception as e:
             print(e)
@@ -186,7 +191,8 @@ class Navigation(View):
         # label_id = int(request.get("label_id"))
         label_name = request.get("label_name")
         try:
-            # TODO:
+            message = "navigation/begin/"
+            webClient(message, label_name)
             res['code'] = 200
         except Exception as e:
             print(e)

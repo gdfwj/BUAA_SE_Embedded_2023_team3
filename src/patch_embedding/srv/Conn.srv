@@ -1,4 +1,5 @@
 string type
 int32 id
+string arg
 ---
 string response

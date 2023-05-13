@@ -41,6 +41,16 @@ async def echo(websocket, path):
         elif message == 'object/fetch/':
             resp = client("grab", 0)
             message = "I got your message: {}".format(message)
+        elif re.match("service/init/:", message):
+            result = re.search("[0-9]+", message)
+            if result.group() == None:
+                message = "Wrong, please send map_id"
+                break
+            resp = client("navigation_init", int(result.group()))
+            message = "I got your message: {}".format(message)
+        elif re.match("navigation/begin/:", message):
+            label_name = message.split("navigation/begin/:")[1])
+            resp = client("navigation_begin")
         else :
             message = "Invalid message!!!"
         await websocket.send(message)
