@@ -92,7 +92,7 @@
       <el-dialog title="地图信息编辑" :visible.sync="dialogMark" width="60%">
         <el-row>
           <el-col :span="4" style="padding-left: 50px">
-            <el-button round @click="createMark(this.map_id)">航点标记</el-button>
+            <el-button round @click="createMark(map_id)">航点标记</el-button>
           </el-col>
           <el-col :span="4" style="float: right;">
             <el-button type="danger" icon="el-icon-delete" circle @click="dialogDelete = true"></el-button>

@@ -98,6 +98,7 @@ export default {
           else {
             this.$message.success("成功初始化系统设置！")
             this.resetFlag = false;
+            this.activeIndex = '1';
           }
         })
     },
