@@ -11,13 +11,15 @@ import psutil
 import tkinter
 from std_srvs.srv import Trigger, TriggerRequest
 from std_msgs.msg import String
-from patch_embedding.srv import Base
+from patch_embedding.srv import Base, Conn
 from util import terminate_process
 
 
 params = {}
 controller = None
 tkinterUI = None
+logger = None
+
 
 class Controller:
 
@@ -34,8 +36,22 @@ class Controller:
         self.init_pid = p.pid
 
         rospy.init_node("controller")
+        
         for key in params:
             rospy.set_param(key, params[key])
+        
+        rospy.Service('/control/web', Conn, self.web_callback)
+
+    def web_callback(self, req):
+        func_name = req.type
+        id = req.id
+        arg = req.arg
+        if id == 0:
+            getattr(self, func_name)()
+        elif id == -1:
+            getattr(self, func_name)(arg)
+        else:
+            getattr(self, func_name)(id)
 
     def create_map_start(self):
         """开始建图。
@@ -69,16 +85,20 @@ class Controller:
         rospy.wait_for_service('/control/mark/edit')
         if params['use_tkinter'] and map_id == None:
             map_id = tkinterUI.t.get()
-        map_path = params['pkg_path'] + '/maps/map' + str(map_id) + '.yaml'
-        resp = client(map_path)
+        resp = client(str(map_id))
         loginfo(resp.response)
     
-    def save_mark(self):
-        """保存航点。
+    def save_mark(self, map_id=None):
+        """保存航点。需传入地图id
+
+        Args:
+            map_id (int): 地图ID
         """
         client = rospy.ServiceProxy('/control/mark/save', Base)
         rospy.wait_for_service('/control/mark/save')
-        resp = client('save')
+        if params['use_tkinter'] and map_id == None:
+            map_id = tkinterUI.t.get()
+        resp = client(str(map_id))
         loginfo(resp.response)
 
     def navigation_init(self, map_id=None):
@@ -91,22 +111,22 @@ class Controller:
         rospy.wait_for_service('/control/navigation/init')
         if params['use_tkinter'] and map_id == None:
             map_id = tkinterUI.t.get()
-        map_path = params['pkg_path'] + '/maps/map' + str(map_id) + '.yaml'
-        resp = client(map_path)
+        # map_path = params['pkg_path'] + '/maps/map' + str(map_id) + '.yaml'
+        resp = client(str(map_id))
         loginfo(resp.response)
-
-    # def navigation_ready(self):
-    #     client = rospy.ServiceProxy('/control/navigation/ready', Base)
-    #     rospy.wait_for_service('/control/navigation/ready')
-    #     resp = client('start')
-    #     loginfo(resp.response)
 
     def navigation_begin(self, dst=None):
         client = rospy.ServiceProxy('/control/navigation/begin', Base)
         rospy.wait_for_service('/control/navigation/begin')
         if params['use_tkinter'] and dst == None:
             dst = tkinterUI.t.get()
-        resp = client(dst)
+        resp = client(str(dst))
+        loginfo(resp.response)
+
+    def navigation_finish(self):
+        client = rospy.ServiceProxy('/control/navigation/finish', Base)
+        rospy.wait_for_service('/control/navigation/finish')
+        resp = client('start')
         loginfo(resp.response)
 
     def grab(self):
@@ -126,7 +146,7 @@ class Controller:
 class TkinterUI:
     def __init__(self, controller: Controller):
         self.window = tkinter.Tk()
-        self.window.geometry('400x500')
+        self.window.geometry('400x600')
         frame = tkinter.Frame(self.window)
         frame.pack(fill='both', expand='yes')
 
@@ -138,10 +158,12 @@ class TkinterUI:
         b6.pack()
         b7 = tkinter.Button(frame,text="保存航点",command=controller.save_mark)
         b7.pack()
-        b3 = tkinter.Button(frame,text="校准导航",command=controller.navigation_init)
+        b3 = tkinter.Button(frame,text="进入服务模式",command=controller.navigation_init)
         b3.pack()
         b3 = tkinter.Button(frame,text="导航到目标点",command=controller.navigation_begin)
         b3.pack()
+        b8 = tkinter.Button(frame,text="退出服务模式",command=controller.navigation_finish)
+        b8.pack()
         b4 = tkinter.Button(frame,text="抓取",command=controller.grab)
         b4.pack()
         b5 = tkinter.Button(frame,text="退出",command=controller.exit)
@@ -172,9 +194,11 @@ class TkinterUI:
 def loginfo(text):
     if params['use_tkinter']:
         tkinterUI.log(text)
+    logger.publish(text)
 
 
 if __name__ == '__main__':
+    logger = rospy.Publisher('/control/logger', String, queue_size=10)	
     pkg_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     with open(pkg_path + "/config/control.yaml", 'r') as file:
         params = yaml.load(file.read(), Loader=yaml.FullLoader)

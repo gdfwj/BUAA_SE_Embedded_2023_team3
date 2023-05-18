@@ -30,6 +30,8 @@ class Grab:
             finished = True
 
     def handle_grab(self, req):
+        if rospy.get_param("service_start") == False:
+            return BaseResponse("未开启服务")
         
         def t():
             if rospy.get_param("simulate"):

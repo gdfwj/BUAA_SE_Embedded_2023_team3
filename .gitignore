@@ -5,3 +5,5 @@ src/wpb_home/
 src/wpr_simulation/
 src/xfyun_waterplus/
 src/.vscode/
+.idea/
+.vscode/
