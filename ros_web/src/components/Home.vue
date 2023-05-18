@@ -90,10 +90,29 @@ export default {
         .catch(() => {});
     },
     resetSys() {
-      this.resetFlag = false;
-    //   发送回复出厂设置请求
+      this.$axios.post(`http://localhost:8000/main/resetAll/`)
+        .then(res => {
+          if (res.data.code == 400) {
+            this.$message.error(res.data.msg)
+          }
+          else {
+            this.$message.success("成功初始化系统设置！")
+            this.resetFlag = false;
+            this.activeIndex = '1';
+          }
+        })
     },
-    updateSys() {}
+    updateSys() {
+      this.$axios.post(`http://localhost:8000/main/update/`)
+        .then(res => {
+          if (res.data.code == 400) {
+            this.$message.error(res.data.msg)
+          }
+          else {
+            this.$message.success("系统升级成功")
+          }
+        })
+    }
   },
   components: {
     mainPage,
