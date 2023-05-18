@@ -2,6 +2,7 @@
 # coding=utf-8
 
 import os
+import sys
 import signal
 import time
 import multiprocessing
@@ -13,10 +14,68 @@ from std_srvs.srv import Trigger, TriggerRequest
 from std_msgs.msg import String
 from patch_embedding.srv import Base, Conn
 from util import terminate_process
-
+import asyncio
+import websockets
+import re
 
 tkinterUI = None
+#服务端ip地址、端口号
+ip = '10.193.215.78'
+# ip = 'localhost'
+port = 8765
 
+async def echo(websocket, path):
+    async for message in websocket:
+        print(message)
+        if message=='map/create/':
+            # resp = client("create_map_start", 0, "")
+            controller.create_map_start()
+            message = "I got your message: {}".format(message)
+        elif re.match("map/save/:", message):
+            result = re.search("[0-9]+", message)
+            if result.group() == None:
+                message = "Wrong, please send map_id"
+            else :
+                controller.create_map_save(map_id=int(result.group()))
+                message = "I got your message: {}".format(message)
+        elif re.match("mark/create/:", message):
+            result = re.search("[0-9]+", message)
+            if result.group() == None:
+                message = "Wrong, please send map_id"
+            else :
+                controller.edit_mark(int(result.group()))
+                message = "I got your message: {}".format(message)
+        elif re.match("mark/save/:", message):
+            map_id = message.split(":")[1]
+            label_id = message.split(":")[2]
+            if map_id == None or label_id == None:
+                message = "Wrong, please send id"
+            else :
+                controller.save_mark(int(map_id), str(label_id))
+                message = "I got your message: {}".format(message)
+        elif message == 'object/fetch/':
+            controller.grab()
+            message = "I got your message: {}".format(message)
+        elif re.match("service/init/:", message):
+            result = re.search("[0-9]+", message)
+            if result.group() == None:
+                message = "Wrong, please send map_id"
+            else :
+                controller.navigation_init(int(result.group()))
+                message = "I got your message: {}".format(message)
+        elif re.match("navigation/begin/:", message):
+            result = re.search("[0-9]+", message)
+            if result.group() == None:
+                message = "Wrong, please send map_id"
+            else :
+                controller.navigation_begin(int(result.group()))
+                message = "I got your message: {}".format(message)
+        elif message == 'navigation/finish/':
+            controller.navigation_finish()
+            message = "I got your message: {}".format(message)
+        else :
+            message = "Invalid message!!!"
+        await websocket.send(message)
 
 class ControllerClient:
     def __init__(self):
@@ -27,25 +86,25 @@ class ControllerClient:
         resp = self.client("create_map_start", 0, "")
 
     def create_map_save(self, map_id=None):
-        pass
+        resp = self.client("create_map_save", map_id, "")
 
     def edit_mark(self, map_id=None):
-        pass
+        resp = self.client("edit_mark", map_id, "")
 
-    def save_mark(self, map_id=None):
-        pass
+    def save_mark(self, map_id=None, label=None):
+        resp = self.client("save_mark", map_id, label)
 
     def navigation_init(self, map_id=None):
-        pass
+        resp = self.client("navigation_init", map_id, "")
 
     def navigation_begin(self, dst=None):
-        pass
+        resp = self.client("navigation_begin", dst, "")
 
     def navigation_finish(self):
-        pass
+        resp = self.client("navigation_finish", 0, "")
 
     def grab(self):
-        pass
+        resp = self.client("grab", 0, "")
 
     def exit(self):
         terminate_process(self.init_pid)
@@ -106,14 +165,21 @@ def loginfo(text):
         tkinterUI.log(text.data)
     rospy.loginfo(text.data)
 
+def quit(signum, frame):
+    sys.exit(0)
 
 if __name__ == '__main__':
     rospy.init_node("controller_client")
     rospy.Subscriber("/control/logger", String, loginfo)
-    
+    # 实现Ctrl+C退出程序
+    signal.signal(signal.SIGINT, quit)
     controller = ControllerClient()
     if rospy.get_param('use_tkinter'):
         tkinterUI = TkinterUI(controller)
         tkinterUI.loop()
-    rospy.spin()
+        rospy.spin()
+    else :
+        # 注册服务端
+        asyncio.get_event_loop().run_until_complete(websockets.serve(echo, ip, port))
+        asyncio.get_event_loop().run_forever()
     
