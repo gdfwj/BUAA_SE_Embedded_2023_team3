@@ -10,7 +10,7 @@ import sys
 VOICE_ON = False
 # 当前正在标注航点的地图id
 Map_id_now = 1
-DEBUG = True
+DEBUG = False
 if DEBUG:
     ip_address = 'ws://localhost'
 else :
@@ -207,6 +207,24 @@ class Navigation(View):
         except Exception as e:
             print(e)
             res['msg'] = '导航失败'
+        return JsonResponse(res)
+
+class Navigation_Finish():
+    def post(self, request):
+        res = {'code': 400, 'msg': '导航结束成功', 'data': []}
+        request = getRequest(request)
+        # label_id = int(request.get("label_id"))
+        # label_name = request.get("label_name")
+        try:
+            # sqlHelper = SqlHelper()
+            # results = sqlHelper.select("tb_label", listnames=["label_id"], cond_dict={"label_name":label_name})
+            # label_id = int(results[0][0])
+            message = "navigation/finish/"
+            webClient(message)
+            res['code'] = 200
+        except Exception as e:
+            print(e)
+            res['msg'] = '导航结束失败'
         return JsonResponse(res)
 
 class Fetch(View):
