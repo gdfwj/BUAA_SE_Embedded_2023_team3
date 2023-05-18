@@ -25,13 +25,14 @@ class Mark:
     def edit(self, req):
         # 将当前地图的航点文件移到主目录
         mark_path = rospy.get_param("pkg_path") + '/marks/waypoints' + req.request + '.xml'
+        map_path = rospy.get_param("pkg_path") + '/maps/map' + req.request + '.yaml'
+        if not os.path.exists(map_path):
+            return BaseResponse("地图不存在")
         if os.path.exists(mark_path):
             os.system("cp " + mark_path + " ~/waypoints.xml")
 
         if self.pid != -1:
             return BaseResponse("正在标注")
-
-        map_path = rospy.get_param("pkg_path") + '/maps/map' + req.request + '.yaml'
 
         def map_server_process():
             os.system("rosrun map_server map_server " + map_path)

@@ -110,22 +110,22 @@ class Controller:
         rospy.wait_for_service('/control/navigation/init')
         if params['use_tkinter'] and map_id == None:
             map_id = tkinterUI.t.get()
-        map_path = params['pkg_path'] + '/maps/map' + str(map_id) + '.yaml'
-        resp = client(map_path)
+        # map_path = params['pkg_path'] + '/maps/map' + str(map_id) + '.yaml'
+        resp = client(str(map_id))
         loginfo(resp.response)
-
-    # def navigation_ready(self):
-    #     client = rospy.ServiceProxy('/control/navigation/ready', Base)
-    #     rospy.wait_for_service('/control/navigation/ready')
-    #     resp = client('start')
-    #     loginfo(resp.response)
 
     def navigation_begin(self, dst=None):
         client = rospy.ServiceProxy('/control/navigation/begin', Base)
         rospy.wait_for_service('/control/navigation/begin')
         if params['use_tkinter'] and dst == None:
             dst = tkinterUI.t.get()
-        resp = client(dst)
+        resp = client(str(dst))
+        loginfo(resp.response)
+
+    def navigation_finish(self):
+        client = rospy.ServiceProxy('/control/navigation/finish', Base)
+        rospy.wait_for_service('/control/navigation/finish')
+        resp = client('start')
         loginfo(resp.response)
 
     def grab(self):
@@ -145,7 +145,7 @@ class Controller:
 class TkinterUI:
     def __init__(self, controller: Controller):
         self.window = tkinter.Tk()
-        self.window.geometry('400x500')
+        self.window.geometry('400x600')
         frame = tkinter.Frame(self.window)
         frame.pack(fill='both', expand='yes')
 
@@ -157,10 +157,12 @@ class TkinterUI:
         b6.pack()
         b7 = tkinter.Button(frame,text="保存航点",command=controller.save_mark)
         b7.pack()
-        b3 = tkinter.Button(frame,text="校准导航",command=controller.navigation_init)
+        b3 = tkinter.Button(frame,text="进入服务模式",command=controller.navigation_init)
         b3.pack()
         b3 = tkinter.Button(frame,text="导航到目标点",command=controller.navigation_begin)
         b3.pack()
+        b8 = tkinter.Button(frame,text="退出服务模式",command=controller.navigation_finish)
+        b8.pack()
         b4 = tkinter.Button(frame,text="抓取",command=controller.grab)
         b4.pack()
         b5 = tkinter.Button(frame,text="退出",command=controller.exit)
