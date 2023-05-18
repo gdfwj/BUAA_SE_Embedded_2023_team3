@@ -209,7 +209,7 @@ class Navigation(View):
             res['msg'] = '导航失败'
         return JsonResponse(res)
 
-class Navigation_Finish():
+class Navigation_Finish(View):
     def post(self, request):
         res = {'code': 400, 'msg': '导航结束成功', 'data': []}
         request = getRequest(request)
