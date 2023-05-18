@@ -83,7 +83,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'patch_embedding',			#数据库名称
         'USER': 'root',       		#名字
-        'PASSWORD': '1234',       #密码
+        'PASSWORD': 'root',       #密码
         'HOST': 'localhost',		#可以不写，默认的
         'PORT': '3306'				#可以不写，默认的
     }

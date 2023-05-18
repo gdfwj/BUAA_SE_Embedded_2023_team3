@@ -18,6 +18,7 @@ from util import terminate_process
 params = {}
 controller = None
 tkinterUI = None
+logger = None
 
 
 class Controller:
@@ -193,9 +194,11 @@ class TkinterUI:
 def loginfo(text):
     if params['use_tkinter']:
         tkinterUI.log(text)
+    logger.publish(text)
 
 
 if __name__ == '__main__':
+    logger = rospy.Publisher('/control/logger', String, queue_size=10)	
     pkg_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     with open(pkg_path + "/config/control.yaml", 'r') as file:
         params = yaml.load(file.read(), Loader=yaml.FullLoader)
