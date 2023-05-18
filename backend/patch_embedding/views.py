@@ -10,8 +10,11 @@ import sys
 VOICE_ON = False
 # 当前正在标注航点的地图id
 Map_id_now = 1
-ip_address = 'ws://10.193.215.78:8765'
 DEBUG = True
+if DEBUG:
+    ip_address = 'ws://localhost'
+else :
+    ip_address = 'ws://10.193.215.78:8765'
 import asyncio
 import websockets
 
@@ -162,8 +165,12 @@ class SaveMark(View):
         label_remark = request.get("label_remark")
         try:
             # TODO:
+            message = "mark/save/"
             sqlHelper = SqlHelper()
             sqlHelper.insert('tb_label', params_dict= {'label_name':label_name, 'label_remark':label_remark, 'label_map':Map_id_now})
+            label_id = sqlHelper.select('tb_label', listnames=['label_id'], cond_dict={"label_name":label_name})
+            label_id = label_id[0]
+            webClient(message, Map_id_now, label_id)
             res['code'] = 200
         except Exception as e:
             print(e)
@@ -188,12 +195,12 @@ class Navigation(View):
     def post(self, request):
         res = {'code': 400, 'msg': '导航成功', 'data': []}
         request = getRequest(request)
-        # label_id = int(request.get("label_id"))
-        label_name = request.get("label_name")
+        label_id = int(request.get("label_id"))
+        # label_name = request.get("label_name")
         try:
-            sqlHelper = SqlHelper()
-            results = sqlHelper.select("tb_label", listnames=["label_id"], cond_dict={"label_name":label_name})
-            label_id = int(results[0][0])
+            # sqlHelper = SqlHelper()
+            # results = sqlHelper.select("tb_label", listnames=["label_id"], cond_dict={"label_name":label_name})
+            # label_id = int(results[0][0])
             message = "navigation/begin/"
             webClient(message, label_id)
             res['code'] = 200
