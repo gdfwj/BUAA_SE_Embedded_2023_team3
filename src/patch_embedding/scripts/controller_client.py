@@ -20,7 +20,7 @@ import re
 
 tkinterUI = None
 #服务端ip地址、端口号
-ip = '10.193.215.78'
+ip = '192.168.8.100'
 # ip = 'localhost'
 port = 8765
 
@@ -161,8 +161,8 @@ class TkinterUI:
 
 
 def loginfo(text):
-    if rospy.get_param('use_tkinter'):
-        tkinterUI.log(text.data)
+    # if rospy.get_param('use_tkinter'):
+    #     tkinterUI.log(text.data)
     rospy.loginfo(text.data)
 
 def quit(signum, frame):
@@ -174,12 +174,12 @@ if __name__ == '__main__':
     # 实现Ctrl+C退出程序
     signal.signal(signal.SIGINT, quit)
     controller = ControllerClient()
-    if rospy.get_param('use_tkinter'):
-        tkinterUI = TkinterUI(controller)
-        tkinterUI.loop()
-        rospy.spin()
-    else :
-        # 注册服务端
-        asyncio.get_event_loop().run_until_complete(websockets.serve(echo, ip, port))
-        asyncio.get_event_loop().run_forever()
+    # if rospy.get_param('use_tkinter'):
+    #     tkinterUI = TkinterUI(controller)
+    #     tkinterUI.loop()
+    #     rospy.spin()
+    # else :
+    # 注册服务端
+    asyncio.get_event_loop().run_until_complete(websockets.serve(echo, ip, port))
+    asyncio.get_event_loop().run_forever()
     

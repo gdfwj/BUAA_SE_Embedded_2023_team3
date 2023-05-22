@@ -14,7 +14,7 @@ DEBUG = False
 if DEBUG:
     ip_address = 'ws://localhost'
 else :
-    ip_address = 'ws://10.193.215.78:8765'
+    ip_address = 'ws://192.168.8.100:8765'
 import asyncio
 import websockets
 

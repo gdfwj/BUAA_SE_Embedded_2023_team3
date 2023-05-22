@@ -38,7 +38,7 @@
             <el-row>
 <!--             地图图片-->
               <el-col>
-                <el-image :src="require(`/home/jinghongbin/SE/team03-project/src/patch_embedding/maps/map`+ map.map_id + `.png`)" style="width: 100%"></el-image>
+                <el-image :src="require(`//home//jinghongbin//SE//team03-project//src//patch_embedding//maps//map`+ map.map_id + `.png`)" style="width: 100%"></el-image>
               </el-col>
             </el-row>
             <el-row style="padding-top: 10px">
@@ -64,7 +64,7 @@
         <el-row style="padding:5px; margin: 5px">
           <el-image
             style="width: 50%; height: 50%; padding-left: 25%"
-            :src="require(`/home/jinghongbin/SE/team03-project/src/patch_embedding/maps/map`+ map.map_id + `.png`)">
+            :src="require(`//home//jinghongbin//SE//team03-project//src//patch_embedding//maps//map`+ this.map_id + `.png`)">
           </el-image>
         </el-row>
         <!--          手动标识-->
