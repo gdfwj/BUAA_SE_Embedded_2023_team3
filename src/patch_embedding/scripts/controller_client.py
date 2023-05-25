@@ -79,22 +79,36 @@ async def echo(websocket, path):
 
 class ControllerClient:
     def __init__(self):
+        self.rviz_pid = -1
         self.client = rospy.ServiceProxy('/control/web', Conn)
         rospy.wait_for_service('/control/web')
 
     def create_map_start(self):
+        p = multiprocessing.Process(target=self.rviz, args=('rviz_create_map.launch',))
+        p.start()
+        self.rviz_pid = p.pid
         resp = self.client("create_map_start", 0, "")
 
     def create_map_save(self, map_id=None):
         resp = self.client("create_map_save", map_id, "")
+        terminate_process(self.rviz_pid)
+        self.rviz_pid = -1
 
     def edit_mark(self, map_id=None):
+        p = multiprocessing.Process(target=self.rviz, args=('rviz_mark.launch',))
+        p.start()
+        self.rviz_pid = p.pid
         resp = self.client("edit_mark", map_id, "")
 
     def save_mark(self, map_id=None, label=None):
         resp = self.client("save_mark", map_id, label)
+        terminate_process(self.rviz_pid)
+        self.rviz_pid = -1
 
     def navigation_init(self, map_id=None):
+        p = multiprocessing.Process(target=self.rviz, args=('rviz_navigation.launch',))
+        p.start()
+        self.rviz_pid = p.pid
         resp = self.client("navigation_init", map_id, "")
 
     def navigation_begin(self, dst=None):
@@ -102,18 +116,28 @@ class ControllerClient:
 
     def navigation_finish(self):
         resp = self.client("navigation_finish", 0, "")
+        terminate_process(self.rviz_pid)
+        self.rviz_pid = -1
 
     def grab(self):
+        p = multiprocessing.Process(target=self.rviz, args=('rviz_navigation.launch',))
+        p.start()
+        self.rviz_pid = p.pid
         resp = self.client("grab", 0, "")
+        terminate_process(self.rviz_pid)
+        self.rviz_pid = -1
 
     def exit(self):
-        terminate_process(self.init_pid)
         if rospy.get_param('use_tkinter'):
             tkinterUI.window.destroy()
+    
+    def rviz(self, launch):
+        os.system("roslaunch patch_embedding " + launch)
 
 class TkinterUI:
     def __init__(self, controller: ControllerClient):
         self.window = tkinter.Tk()
+        self.window.title('client')
         self.window.geometry('400x600')
         frame = tkinter.Frame(self.window)
         frame.pack(fill='both', expand='yes')
@@ -159,10 +183,9 @@ class TkinterUI:
         self.output.insert('end','[' + now_time + '] ' + text + '\n')
 
 
-
 def loginfo(text):
-    # if rospy.get_param('use_tkinter'):
-    #     tkinterUI.log(text.data)
+    if rospy.get_param('use_tkinter'):
+        tkinterUI.log(text.data)
     rospy.loginfo(text.data)
 
 def quit(signum, frame):
@@ -174,9 +197,10 @@ if __name__ == '__main__':
     # 实现Ctrl+C退出程序
     signal.signal(signal.SIGINT, quit)
     controller = ControllerClient()
-    # if rospy.get_param('use_tkinter'):
-    #     tkinterUI = TkinterUI(controller)
-    #     tkinterUI.loop()
+
+    if rospy.get_param('use_tkinter'):
+        tkinterUI = TkinterUI(controller)
+        tkinterUI.loop()
     #     rospy.spin()
     # else :
     # 注册服务端
