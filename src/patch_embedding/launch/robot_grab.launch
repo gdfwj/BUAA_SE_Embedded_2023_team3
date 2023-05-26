@@ -4,12 +4,16 @@
     <!-- Run grab monitor -->
     <!-- <include file="$(find wpb_home_behaviors)/launch/grab_monitor.launch" /> -->
 
+    <!-- Run wpb_home_grab_client node -->
+    <node name="wpb_home_mani_ctrl" pkg="wpb_home_tutorials" type="wpb_home_grab_client"
+        output="screen" />
+
     <node pkg="wpb_home_behaviors" type="wpb_home_grab_server" name="wpb_home_grab_server">
         <param name="start" type="bool" value="false" />
         <rosparam file="$(find wpb_home_bringup)/config/wpb_home.yaml" command="load" />
     </node>
 
-    <!--- Run Kinect -->
+    <!-- Run Kinect -->
     <!--************************ kinect ************************-->
     <arg name="base_name" default="kinect2" />
     <arg name="sensor" default="" />
@@ -20,7 +24,8 @@
     <arg name="use_png" default="false" />
     <arg name="jpeg_quality" default="90" />
     <arg name="png_level" default="1" />
-    <arg name="depth_method" default="cpu" /><!--- default/cpu -->
+    <arg name="depth_method" default="cpu" /><!---
+    default/cpu -->
     <arg name="depth_device" default="-1" />
     <arg name="reg_method" default="cpu" />
     <arg name="reg_device" default="-1" />

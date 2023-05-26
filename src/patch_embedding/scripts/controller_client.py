@@ -22,7 +22,7 @@ tkinterUI = None
 #服务端ip地址、端口号
 ip = '192.168.8.100'
 # ip = 'localhost'
-port = 8765
+port = 10086
 
 async def echo(websocket, path):
     async for message in websocket:
@@ -120,12 +120,12 @@ class ControllerClient:
         self.rviz_pid = -1
 
     def grab(self):
-        # p = multiprocessing.Process(target=self.rviz, args=('rviz_navigation.launch',))
+        # p = multiprocessing.Process(target=self.rviz, args=('rviz_grab.launch',))
         # p.start()
         # self.rviz_pid = p.pid
         resp = self.client("grab", 0, "")
         # terminate_process(self.rviz_pid)
-        self.rviz_pid = -1
+        # self.rviz_pid = -1
 
     def fetch(self, dst1, dst2):
         resp = self.client("fetch", 0, "")
