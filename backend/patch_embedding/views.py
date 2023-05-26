@@ -188,16 +188,16 @@ class SaveMark(View):
 
 class DeleteMark(View):
     def post(self, request):
-        res = {'code': 400, 'msg': '保存航点标注成功', 'data': []}
+        res = {'code': 400, 'msg': '删除航点成功', 'data': []}
         request = getRequest(request)
         label_id = int(request.get("label_id"))
         try:
-            sqlHelper = SqlHelper("tb_label", {"label_id":label_id})
-            sqlHelper.delete()
+            sqlHelper = SqlHelper()
+            sqlHelper.delete("tb_label", {"label_id":label_id})
             res['code'] = 200
         except Exception as e:
             print(e)
-            res['msg'] = '保存航点标注失败'
+            res['msg'] = '删除航点失败'
         return JsonResponse(res)
 
 
