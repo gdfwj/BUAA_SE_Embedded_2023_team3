@@ -7,3 +7,6 @@ src/xfyun_waterplus/
 src/.vscode/
 .idea/
 .vscode/
+backend/.idea/
+/src/patch_embedding/maps
+/src/patch_embedding/marks
