@@ -164,7 +164,6 @@ class SaveMark(View):
         label_name = request.get("label_name")
         label_remark = request.get("label_remark")
         try:
-            # TODO:
             message = "mark/save/"
             sqlHelper = SqlHelper()
             sqlHelper.insert('tb_label', params_dict= {'label_name':label_name, 'label_remark':label_remark, 'label_map':Map_id_now})
@@ -176,6 +175,21 @@ class SaveMark(View):
             print(e)
             res['msg'] = '保存航点标注失败'
         return JsonResponse(res)
+
+class DeleteMark(View):
+    def post(self, request):
+        res = {'code': 400, 'msg': '保存航点标注成功', 'data': []}
+        request = getRequest(request)
+        label_id = int(request.get("label_id"))
+        try:
+            sqlHelper = SqlHelper("tb_label", {"label_id":label_id})
+            sqlHelper.delete()
+            res['code'] = 200
+        except Exception as e:
+            print(e)
+            res['msg'] = '保存航点标注失败'
+        return JsonResponse(res)
+
 
 class ServiceInit(View):
     def post(self, request):
