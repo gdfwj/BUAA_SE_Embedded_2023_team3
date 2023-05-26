@@ -185,6 +185,12 @@ export default {
       this.$router.push({
         name: 'Home'
       })
+      this.$axios.post(`http://localhost:8000/navigation/finish/`)
+        .then(res => {
+          if (res.data.code == 400) {
+            this.$message.error(res.data.msg)
+          }
+        })
     },
     // get marks
     getMarks(map_id) {
