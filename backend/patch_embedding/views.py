@@ -33,6 +33,12 @@ def webClient(message, *args):
         message = message + ":" + str(arg)
     loop.run_until_complete(hello(ip_address, message))
 
+def checkWord(inputs: str):
+    string = "~!@#$%^&*()_+-*/<>,.[]\/"
+    for i in string:
+        if i in inputs:
+            raise Exception('check failed')
+
 class ResetAll(View):
     def post(self, request):
         res = {'code': 400, 'msg': '恢复出厂设置成功', 'data': []}
@@ -96,6 +102,7 @@ class Save_map(View):
         map_name = request.get("map_name")
         map_remark = request.get("map_remark")
         try:
+            checkWord(map_name)
             message = 'map/save/'
             sqlHelper = SqlHelper()
             sqlHelper.insert('tb_map', {"map_name":map_name, "map_remark":map_remark, "map_time":getNowTime()})
@@ -164,6 +171,7 @@ class SaveMark(View):
         label_name = request.get("label_name")
         label_remark = request.get("label_remark")
         try:
+            checkWord(label_name)
             message = "mark/save/"
             sqlHelper = SqlHelper()
             sqlHelper.insert('tb_label', params_dict= {'label_name':label_name, 'label_remark':label_remark, 'label_map':Map_id_now})
@@ -259,7 +267,7 @@ class VoiceChange(View):
     def post(self, request):
         global VOICE_ON
         res = {'code': 400, 'msg': '', 'data': []}
-        request = getRequest(request)
+        # request = getRequest(request)
         try:
             # TODO:
             res['code'] = 200
