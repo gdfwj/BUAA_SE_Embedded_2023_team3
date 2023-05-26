@@ -30,14 +30,15 @@ class Grab:
             finished = True
 
     def handle_grab(self, req):
-        if rospy.get_param("service_start") == False:
-            return BaseResponse("未开启服务")
+        # if rospy.get_param("service_start") == False:
+        #     return BaseResponse("未开启服务")
         
         def t():
-            if rospy.get_param("simulate"):
-                os.system("roslaunch patch_embedding sim_grab.launch")
-            else:
-                os.system("roslaunch patch_embedding robot_grab.launch")
+            os.system("roslaunch patch_embedding sim_grab.launch")
+            # if rospy.get_param("simulate"):
+            #     os.system("roslaunch patch_embedding sim_grab.launch")
+            # else:
+            #     os.system("roslaunch patch_embedding robot_grab.launch")
 
         p = multiprocessing.Process(target=t)
         p.start()

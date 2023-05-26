@@ -184,8 +184,8 @@ class TkinterUI:
 
 
 def loginfo(text):
-    if rospy.get_param('use_tkinter'):
-        tkinterUI.log(text.data)
+    # if rospy.get_param('use_tkinter'):
+    #     tkinterUI.log(text.data)
     rospy.loginfo(text.data)
 
 def quit(signum, frame):
@@ -198,9 +198,9 @@ if __name__ == '__main__':
     signal.signal(signal.SIGINT, quit)
     controller = ControllerClient()
 
-    if rospy.get_param('use_tkinter'):
-        tkinterUI = TkinterUI(controller)
-        tkinterUI.loop()
+    # if rospy.get_param('use_tkinter'):
+    #     tkinterUI = TkinterUI(controller)
+    #     tkinterUI.loop()
     #     rospy.spin()
     # else :
     # 注册服务端

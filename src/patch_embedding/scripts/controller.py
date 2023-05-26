@@ -138,6 +138,18 @@ class Controller:
         resp = client('start')
         loginfo(resp.response)
 
+    def fetch(self, dst1, dst2):
+        """导航抓取一体化
+
+        Args:
+            dst1 (int): 桌子的航点
+            dst2 (int): 送达的航点
+        """
+        self.navigation_begin(dst1)
+        self.grab()
+        self.navigation_begin(dst2)
+
+
     def exit(self):
         terminate_process(self.init_pid)
         if params['use_tkinter']:
