@@ -11,7 +11,7 @@
           <space></space>
         </el-col>
         <el-col :span="4" style="float: right; align-content: center;text-align: center">
-          <el-button type="text" @click="createMap">新建地图</el-button>
+          <el-button type="text" @click="dialogVisible=true;createMap()">新建地图</el-button>
         </el-col>
       </el-row>
     </el-header>
@@ -50,7 +50,7 @@
       </el-row>
 
 <!--      新建地图弹窗-->
-      <el-dialog title="新建地图中..." :visible.sync="dialogVisible" width="50%">
+      <el-dialog title="新建地图中..." :visible.sync="this.dialogVisible" width="50%" :append-to-body="true">
         <el-row style="height: 80%; margin-left: 15%">
           <el-image
             style="width: 70%; height: 70%; padding-left: 8%; align-content: center"

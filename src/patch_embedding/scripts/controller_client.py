@@ -120,16 +120,18 @@ class ControllerClient:
         self.rviz_pid = -1
 
     def grab(self):
-        p = multiprocessing.Process(target=self.rviz, args=('rviz_navigation.launch',))
-        p.start()
-        self.rviz_pid = p.pid
+        # p = multiprocessing.Process(target=self.rviz, args=('rviz_navigation.launch',))
+        # p.start()
+        # self.rviz_pid = p.pid
         resp = self.client("grab", 0, "")
-        terminate_process(self.rviz_pid)
+        # terminate_process(self.rviz_pid)
         self.rviz_pid = -1
 
+    def fetch(self, dst1, dst2):
+        resp = self.client("fetch", 0, "")
+
     def exit(self):
-        if rospy.get_param('use_tkinter'):
-            tkinterUI.window.destroy()
+        exit(0)
     
     def rviz(self, launch):
         os.system("roslaunch patch_embedding " + launch)
@@ -184,8 +186,7 @@ class TkinterUI:
 
 
 def loginfo(text):
-    # if rospy.get_param('use_tkinter'):
-    #     tkinterUI.log(text.data)
+    # tkinterUI.log(text.data)
     rospy.loginfo(text.data)
 
 def quit(signum, frame):
@@ -198,11 +199,13 @@ if __name__ == '__main__':
     signal.signal(signal.SIGINT, quit)
     controller = ControllerClient()
 
-    # if rospy.get_param('use_tkinter'):
+    # 开启面板
+    # def launch_tkinter():
     #     tkinterUI = TkinterUI(controller)
     #     tkinterUI.loop()
-    #     rospy.spin()
-    # else :
+    # p = multiprocessing.Process(target=launch_tkinter)
+    # p.start()
+
     # 注册服务端
     asyncio.get_event_loop().run_until_complete(websockets.serve(echo, ip, port))
     asyncio.get_event_loop().run_forever()
