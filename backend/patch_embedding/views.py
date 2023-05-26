@@ -255,10 +255,15 @@ class Fetch(View):
     def post(self, request):
         res = {'code': 400, 'msg': '取物成功', 'data': []}
         request = getRequest(request)
-        label_id = int(request.get("label_id"))
+        label_id1 = int(request.get("label_id1"))
+        label_id2 = int(request.get("label_id2"))
         try:
-            message = "object/fetch/"
-            webClient(message)
+            if label_id1 == -1:
+                message = "object/fetch/"
+                webClient(message)
+            else:
+                message = "object/allFetch"
+                webClient(message, label_id1, label_id2)
             res['code'] = 200
         except Exception as e:
             print(e)

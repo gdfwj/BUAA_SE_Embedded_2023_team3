@@ -73,6 +73,14 @@ async def echo(websocket, path):
         elif message == 'navigation/finish/':
             controller.navigation_finish()
             message = "I got your message: {}".format(message)
+        elif re.match('object/allFetch/:', message):
+            label_id1 = message.split(":")[1]
+            label_id2 = message.split(":")[2]
+            if label_id1 == None or label_id2 == None:
+                message = "Wrong, please send id"
+            else:
+                controller.fetch(int(label_id1), label_id2)
+            message = "I got your message: {}".format(message)
         else :
             message = "Invalid message!!!"
         await websocket.send(message)
@@ -126,6 +134,9 @@ class ControllerClient:
         resp = self.client("grab", 0, "")
         terminate_process(self.rviz_pid)
         self.rviz_pid = -1
+
+    def fetch(self, label_id1, label_id2):
+        resp = self.client("fetch", label_id1, str(label_id2))
 
     def exit(self):
         if rospy.get_param('use_tkinter'):

@@ -48,6 +48,8 @@ class Controller:
         arg = req.arg
         if id == 0:
             getattr(self, func_name)()
+        elif str(func_name) == 'fetch':
+            getattr(self, func_name)(id, int(arg))
         elif id == -1:
             getattr(self, func_name)(arg)
         else:
