@@ -11,7 +11,7 @@
           <space></space>
         </el-col>
         <el-col :span="4" style="float: right; align-content: center;text-align: center">
-          <el-button type="text" @click="createMap">新建地图</el-button>
+          <el-button type="text" @click="dialogVisible=true;createMap()">新建地图</el-button>
         </el-col>
       </el-row>
     </el-header>
