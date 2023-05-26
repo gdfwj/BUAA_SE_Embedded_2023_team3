@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="patch_embedding" type="tts_subscribe" name="tts_subscribe" output="screen"/>
+</launch>

@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="patch_embedding" type="iat_publish" name="iat_publish" output="screen"/>
+</launch>
