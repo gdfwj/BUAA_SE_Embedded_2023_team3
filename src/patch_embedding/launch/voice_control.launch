@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="patch_embedding" type="voice_control" name="car_control" output="screen"/>
+</launch>

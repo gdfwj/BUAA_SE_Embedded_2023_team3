@@ -10,6 +10,7 @@ urlpatterns = [
     path('mark/show/', views.ShowMark.as_view(), name=''),
     path('mark/create/', views.CreateMark.as_view(), name=''),
     path('mark/save/', views.SaveMark.as_view(), name=''),
+    path('mark/delete/', views.DeleteMark.as_view(), name=''),
     path('service/init/', views.ServiceInit.as_view(), name=''),
     path('navigation/begin/', views.Navigation.as_view(), name=''),
     path('navigation/finish/', views.Navigation_Finish.as_view(), name=''),

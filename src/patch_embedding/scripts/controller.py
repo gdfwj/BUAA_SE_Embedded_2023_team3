@@ -135,7 +135,15 @@ class Controller:
         """
         client = rospy.ServiceProxy('/control/arm', Base)
         rospy.wait_for_service('/control/arm')
-        resp = client('start')
+        resp = client('grab')
+        loginfo(resp.response)
+
+    def pass_obj(self):
+        """当前位置放下物品
+        """
+        client = rospy.ServiceProxy('/control/arm', Base)
+        rospy.wait_for_service('/control/arm')
+        resp = client('pass')
         loginfo(resp.response)
 
     def fetch(self, dst1, dst2):
