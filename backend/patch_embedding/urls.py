@@ -15,6 +15,7 @@ urlpatterns = [
     path('navigation/begin/', views.Navigation.as_view(), name=''),
     path('navigation/finish/', views.Navigation_Finish.as_view(), name=''),
     path('object/fetch/', views.Fetch.as_view(), name=''),
+    path('object/pass/', views.PassObj.as_view(), name=''),
     path('control/voice/', views.VoiceChange.as_view(), name=''),
 
 ]

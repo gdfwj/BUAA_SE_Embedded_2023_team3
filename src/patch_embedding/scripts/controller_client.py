@@ -81,6 +81,9 @@ async def echo(websocket, path):
             else:
                 controller.fetch(int(label_id1), label_id2)
             message = "I got your message: {}".format(message)
+        elif message == "object/pass/":
+            controller.pass_obj()
+            message = "I got your message: {}".format(message)
         else :
             message = "Invalid message!!!"
         await websocket.send(message)
@@ -136,7 +139,11 @@ class ControllerClient:
         self.rviz_pid = -1
 
     def fetch(self, label_id1, label_id2):
+        # 实现导航+取物一体化
         resp = self.client("fetch", label_id1, str(label_id2))
+
+    def pass_obj(self):
+        resp = self.client("pass_obj", 0, "")
 
     def exit(self):
         if rospy.get_param('use_tkinter'):

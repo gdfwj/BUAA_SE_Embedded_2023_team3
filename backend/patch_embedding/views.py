@@ -255,7 +255,9 @@ class Fetch(View):
     def post(self, request):
         res = {'code': 400, 'msg': '取物成功', 'data': []}
         request = getRequest(request)
+        # 桌子的id
         label_id1 = int(request.get("label_id1"))
+        # 取物后返回的目的地id
         label_id2 = int(request.get("label_id2"))
         try:
             if label_id1 == -1:
@@ -268,6 +270,18 @@ class Fetch(View):
         except Exception as e:
             print(e)
             res['msg'] = '取物失败'
+        return JsonResponse(res)
+
+class PassObj(View):
+    def post(self, request):
+        res = {'code': 400, 'msg': '递物成功', 'data': []}
+        try:
+            message = "object/pass/"
+            webClient(message)
+            res['code'] = 200
+        except Exception as e:
+            print(e)
+            res['msg'] = '递物失败'
         return JsonResponse(res)
 
 class VoiceChange(View):
