@@ -38,7 +38,7 @@
             <el-row>
 <!--             地图图片-->
               <el-col>
-                <el-image :src="require(`E://学习//大三下//软工//项目开发//`+ map.map_id + `.png`)" style="width: 100%"></el-image>
+                <el-image :src="require(`//home//jinghongbin//SE//team03-project//src//patch_embedding//maps//map`+ map.map_id + `.png`)" style="width: 100%"></el-image>
               </el-col>
             </el-row>
             <el-row style="padding-top: 10px">
@@ -64,7 +64,7 @@
         <el-row style="padding:5px; margin: 5px">
           <el-image
             style="width: 50%; height: 50%; padding-left: 25%"
-            :src="require(`E://学习//大三下//软工//项目开发//`+ this.map_id + `.png`)">
+            :src="require(`//home//jinghongbin//SE//team03-project//src//patch_embedding//maps//map`+ this.map_id + `.png`)">
           </el-image>
         </el-row>
         <!--          手动标识-->
@@ -110,7 +110,7 @@
               </el-col>
             </el-row>
           </div>
-<!--          抓取-->
+<!--          远端取物-->
           <div v-if="value == 'label2'" style="text-align: center; align-content: center; align-items: center">
               <el-row style="padding-top: 20px">
                 <el-col :span="4" style="margin-top: 3px;padding-left: 30px">
@@ -129,10 +129,42 @@
                     </el-option>
                   </el-select>
                 </el-col>
+                <el-col :span="4" style="margin-top: 3px;padding-left: 30px">
+                  返回位置：
+                </el-col>
+                <el-col :span="4">
+                  <el-select
+                    v-model="catchRetPoint"
+                    placeholder="返回位置"
+                  >
+                    <el-option
+                      v-for="item in pointsOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </el-col>
                 <el-col :span="4" style="float: right">
                   <el-button type="warning" @click="submitFetch">开始取物</el-button>
                 </el-col>
               </el-row>
+          </div>
+<!--          原地取物-->
+          <div v-if="value == 'label3'" style="text-align: center; align-content: center; align-items: center">
+            <el-row style="padding-top: 20px">
+              <el-col :span="4" style="padding-left: 17%">
+                <el-button type="success" @click="submitLocalFetch">开始取物</el-button>
+              </el-col>
+            </el-row>
+          </div>
+<!--          物品传递-->
+          <div v-if="value == 'label4'" style="text-align: center; align-content: center; align-items: center">
+            <el-row style="padding-top: 20px">
+              <el-col :span="4" style="padding-left: 17%">
+                <el-button type="success" @click="submitLocalPass">开始传递</el-button>
+              </el-col>
+            </el-row>
           </div>
         </div>
         <!--          语音控制-->
@@ -169,12 +201,21 @@ export default {
         },
         {
           value: 'label2',
-          label: '取物控制'
+          label: '远端取物'
+        },
+        {
+          value: 'label3',
+          label: '原地取物'
+        },
+        {
+          value: 'label4',
+          label: '物品传递'
         }
       ],
       pointsOptions:[],
-      navEndPoint: '请选择结束位置',
-      catchEndPoint: '请选择结束位置'
+      navEndPoint: '结束位置',
+      catchEndPoint: '目标位置',
+      catchRetPoint: '返回位置'
     }
   },
   created() {
@@ -185,6 +226,12 @@ export default {
       this.$router.push({
         name: 'Home'
       })
+      this.$axios.post(`http://localhost:8000/navigation/finish/`)
+        .then(res => {
+          if (res.data.code == 400) {
+            this.$message.error(res.data.msg)
+          }
+        })
     },
     // get marks
     getMarks(map_id) {
@@ -274,30 +321,77 @@ export default {
     submitNav() {
       console.log(this.navEndPoint)
       let x = {label_id: this.navEndPoint}
-      this.$axios.post(`http://localhost:8000/navigation/begin/`, x)
+      if (isNaN(this.navEndPoint)) {
+        this.$message.error('请选择导航位置')
+      }
+      else {
+        this.$axios.post(`http://localhost:8000/navigation/begin/`, x)
+          .then(res => {
+            if (res.data.code == 400) {
+              this.$message.error(res.data.msg)
+            } else {
+              this.$message({
+                message: '成功提交导航任务请求',
+                type: 'success'
+              });
+            }
+          })
+      }
+      this.navEndPoint = '结束位置'
+    },
+    // 远端抓取
+    submitFetch() {
+      if (isNaN(this.catchEndPoint)) {
+        this.$message.error('请选择目标位置')
+      }
+      else if (isNaN(this.catchRetPoint)) {
+        this.$message.error('请选择返回位置')
+      }
+      else {
+        let x = {
+          label_id1: this.catchEndPoint,
+          label_id2: this.catchRetPoint
+        }
+        this.$axios.post(`http://localhost:8000/object/fetch/`, x)
+          .then(res => {
+            if (res.data.code == 400) {
+              this.$message.error(res.data.msg)
+            } else {
+              this.catchRetPoint = '目标位置'
+              this.catchRetPoint = '返回位置'
+              this.$message({
+                message: '成功提交抓取任务请求',
+                type: 'success'
+              });
+            }
+          })
+      }
+    },
+    submitLocalFetch() {
+      let x = {
+        label_id1: -1,
+        label_id2: -1
+      }
+      this.$axios.post(`http://localhost:8000/object/fetch/`, x)
         .then(res => {
           if (res.data.code == 400) {
             this.$message.error(res.data.msg)
-          }
-          else {
+          } else {
             this.$message({
-              message: '成功提交导航任务请求',
+              message: '成功提交本地抓取请求',
               type: 'success'
             });
           }
         })
     },
-    // 抓取
-    submitFetch() {
-      let x = {label_id: this.catchEndPoint}
-      this.$axios.post(`http://localhost:8000/object/fetch/`, x)
+    submitLocalPass() {
+      this.$axios.post(`http://localhost:8000/object/pass/`)
         .then(res => {
           if (res.data.code == 400) {
             this.$message.error(res.data.msg)
-          }
-          else {
+          } else {
             this.$message({
-              message: '成功提交导航任务请求',
+              message: '成功提交物品传递请求',
               type: 'success'
             });
           }

@@ -58,6 +58,7 @@ class Waypoints:
             name = srvl.name
             self.points.append(srvl)
             self.dict[name] = srvl
+            
     def getWaypointByName(self, target):
         rospy.wait_for_service("waterplus/get_num_waypoint")
         cliGetNum = rospy.ServiceProxy(
@@ -78,6 +79,7 @@ class Waypoints:
             self.points.append(srvl)
             self.dict[name] = srvl
         return self.dict[target]
+
     def getNames(self):
         rospy.wait_for_service("waterplus/get_num_waypoint")
         cliGetNum = rospy.ServiceProxy(
@@ -105,20 +107,30 @@ class Navigation:
         rospy.loginfo("navigation start!")
 
         rospy.Service('/control/navigation/init', Base, self.init)
-        # rospy.Service('/control/navigation/ready', Base, self.ready)
         rospy.Service('/control/navigation/begin', Base, self.begin)
+        rospy.Service('/control/navigation/finish', Base, self.finish)
 
         self.pid = -1
         self.map_server_pid = -1
+        rospy.set_param("service_start", False)
 
     # 校准机器人位置
     def init(self, req):
         if self.pid != -1:
             return BaseResponse("正在校准")
-        os.system('cp ' + rospy.get_param("pkg_path") + '/config/waypoints.xml ~/waypoints.xml')
+
+        mark_path = rospy.get_param("pkg_path") + '/marks/waypoints' + str(req.request) + '.xml'
+        map_path = rospy.get_param('pkg_path') + '/maps/map' + str(req.request) + '.yaml'
+        if not os.path.exists(mark_path):
+            return BaseResponse("航点不存在")
+        elif not os.path.exists(map_path):
+            return BaseResponse("地图不存在")
+        rospy.set_param("service_start", True)
+
+        os.system('cp ' + mark_path + ' ~/waypoints.xml')
         
         def map_server_process():
-            os.system("rosrun map_server map_server " + req.request)
+            os.system("rosrun map_server map_server " + map_path)
 
         p = multiprocessing.Process(target=map_server_process)
         p.start()
@@ -135,8 +147,9 @@ class Navigation:
         self.pid = p.pid
         return BaseResponse("开始校准")
         
-    
     def begin(self, req):
+        if rospy.get_param("service_start") == False:
+            return BaseResponse("未开启服务")
         target = req.request
         srvl = Waypoints().getWaypointByName(target)
         ac = SimpleActionClient("move_base", MoveBaseAction)
@@ -149,18 +162,20 @@ class Navigation:
         result = self.wait(ac, srvl.pose)
         if result:
             rospy.loginfo("arrived at " + srvl.name)
-            terminate_process(self.pid)
-            terminate_process(self.map_server_pid)
-            self.pid = -1
-            self.map_server_pid = -1
             return BaseResponse("导航成功")
         else:
             rospy.logerr("failed to arrive at" + srvl.name)
-            terminate_process(self.pid)
-            terminate_process(self.map_server_pid)
-            self.pid = -1
-            self.map_server_pid = -1
             return BaseResponse("导航失败")
+
+    def finish(self, req):
+        if rospy.get_param("service_start") == False:
+            return BaseResponse("未开启服务")
+        terminate_process(self.pid)
+        terminate_process(self.map_server_pid)
+        self.pid = -1
+        self.map_server_pid = -1
+        rospy.set_param("service_start", False)
+        return BaseResponse("结束服务成功")
 
     def wait(self, ac, target_pose):
         data = None

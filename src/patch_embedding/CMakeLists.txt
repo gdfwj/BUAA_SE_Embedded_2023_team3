@@ -3,6 +3,7 @@ project(patch_embedding)
 
 # # Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
+add_definitions(-std=c++11)
 
 # # Find catkin macros and libraries
 # # if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -16,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 add_service_files(FILES
   Base.srv
+  Conn.srv
 )
 
 generate_messages(
@@ -130,11 +132,23 @@ catkin_package(
 # # Specify additional locations of header files
 # # Your package locations should be listed before other locations
 include_directories(
-
-  # include
   ${catkin_INCLUDE_DIRS}
+  include
 )
+EXECUTE_PROCESS(COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE)
+message(STATUS "Architecture: ${ARCHITECTURE}")
 
+if(${ARCHITECTURE} MATCHES "64")
+  link_directories(
+    ${catkin_LIB_DIRS}
+    libs/x64
+  )
+else()
+  link_directories(
+    ${catkin_LIB_DIRS}
+    libs/x86
+  )
+endif()
 
 # # Declare a C++ library
 # add_library(${PROJECT_NAME}
@@ -165,6 +179,26 @@ include_directories(
 # target_link_libraries(${PROJECT_NAME}_node
 # ${catkin_LIBRARIES}
 # )
+add_executable(tts_subscribe src/tts_subscribe.cpp)
+target_link_libraries(
+  tts_subscribe
+  ${catkin_LIBRARIES}
+  libmsc.so -ldl -pthread
+)
+
+add_executable(iat_publish src/iat_publish.cpp src/speech_recognizer.c src/linuxrec.c)
+target_link_libraries(
+  iat_publish
+  ${catkin_LIBRARIES}
+  libmsc.so -ldl -lpthread -lm -lrt -lasound
+)
+
+add_executable(voice_control src/voice_control.cpp)
+target_link_libraries(
+  voice_control
+  ${catkin_LIBRARIES}
+  libmsc.so -ldl -pthread
+)
 
 # ############
 # # Install ##

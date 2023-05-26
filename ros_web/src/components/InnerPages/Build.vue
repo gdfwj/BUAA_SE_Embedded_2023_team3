@@ -11,7 +11,7 @@
           <space></space>
         </el-col>
         <el-col :span="4" style="float: right; align-content: center;text-align: center">
-          <el-button type="text" @click="createMap">新建地图</el-button>
+          <el-button type="text" @click="dialogVisible=true;createMap()">新建地图</el-button>
         </el-col>
       </el-row>
     </el-header>
@@ -29,7 +29,7 @@
             <el-row>
 <!--             地图图片-->
               <el-col>
-                <el-image :src="require(`E://学习//大三下//软工//项目开发//`+ map.map_id + `.png`)" style="width: 100%"></el-image>
+                <el-image :src="require(`//home//jinghongbin//SE//team03-project//src//patch_embedding//maps//map`+ map.map_id + `.png`)" style="width: 100%"></el-image>
               </el-col>
             </el-row>
             <el-row style="padding-top: 10px">
@@ -102,7 +102,7 @@
         <el-row>
           <el-image
             style="width: 50%; height: 50%; padding-left: 25%"
-            :src="require(`E://学习//大三下//软工//项目开发//`+ this.map_id + `.png`)">
+            :src="require(`//home//jinghongbin//SE//team03-project//src//patch_embedding//maps//map`+ this.map_id + `.png`)">
           </el-image>
         </el-row>
 

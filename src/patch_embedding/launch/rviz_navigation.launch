@@ -1,0 +1,5 @@
+<launch>
+    <!-- rviz -->
+    <arg name="rvizconfig" default="$(find wpb_home_tutorials)/rviz/nav.rviz" />
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+</launch>
