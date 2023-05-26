@@ -11,10 +11,12 @@ VOICE_ON = False
 # 当前正在标注航点的地图id
 Map_id_now = 1
 DEBUG = False
-if DEBUG:
-    ip_address = 'ws://localhost'
-else :
-    ip_address = 'ws://192.168.8.100:8765'
+# if DEBUG:
+#     ip_address = 'ws://localhost'
+# else :
+ip_address = 'ws://192.168.8.100:8765'
+# ip_address = 'ws://localhost:8765'
+
 import asyncio
 import websockets
 

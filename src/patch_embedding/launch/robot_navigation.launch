@@ -25,8 +25,4 @@
     <node pkg="waterplus_map_tools" type="wp_manager" name="wp_manager" output="screen" />
     <!-- <node pkg="waterplus_map_tools" type="wp_navi_server" name="wp_navi_server" output="screen" /> -->
 
-    <!-- rviz -->
-    <arg name="rvizconfig" default="$(find wpb_home_tutorials)/rviz/nav.rviz" />
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
-
 </launch>

@@ -42,7 +42,10 @@ class Mark:
         self.map_server_pid = p.pid
 
         def t():
-            os.system("roslaunch patch_embedding robot_mark.launch")
+            if rospy.get_param("simulate"):
+                os.system("roslaunch patch_embedding sim_mark.launch")
+            else:
+                os.system("roslaunch patch_embedding robot_mark.launch")
                 
         p = multiprocessing.Process(target=t)
         p.start()

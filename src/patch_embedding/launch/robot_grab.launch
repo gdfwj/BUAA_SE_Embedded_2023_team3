@@ -2,7 +2,7 @@
 <launch>
 
     <!-- Run grab monitor -->
-    <include file="$(find wpb_home_behaviors)/launch/grab_monitor.launch" />
+    <!-- <include file="$(find wpb_home_behaviors)/launch/grab_monitor.launch" /> -->
 
     <node pkg="wpb_home_behaviors" type="wpb_home_grab_server" name="wpb_home_grab_server">
         <param name="start" type="bool" value="false" />

@@ -11,7 +11,7 @@ import psutil
 import tkinter
 from std_srvs.srv import Trigger, TriggerRequest
 from std_msgs.msg import String
-from patch_embedding.srv import Base, Conn
+from patch_embedding.srv import Base, Conn, ConnResponse
 from util import terminate_process
 
 
@@ -52,6 +52,7 @@ class Controller:
             getattr(self, func_name)(arg)
         else:
             getattr(self, func_name)(id)
+        return ConnResponse("调用成功")
 
     def create_map_start(self):
         """开始建图。
@@ -145,6 +146,18 @@ class Controller:
         resp = client('pass')
         loginfo(resp.response)
 
+    def fetch(self, dst1, dst2):
+        """导航抓取一体化
+
+        Args:
+            dst1 (int): 桌子的航点
+            dst2 (int): 送达的航点
+        """
+        self.navigation_begin(dst1)
+        self.grab()
+        self.navigation_begin(dst2)
+
+
     def exit(self):
         terminate_process(self.init_pid)
         if params['use_tkinter']:
@@ -154,6 +167,7 @@ class Controller:
 class TkinterUI:
     def __init__(self, controller: Controller):
         self.window = tkinter.Tk()
+        self.window.title('controller')
         self.window.geometry('400x600')
         frame = tkinter.Frame(self.window)
         frame.pack(fill='both', expand='yes')

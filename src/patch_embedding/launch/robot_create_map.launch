@@ -5,8 +5,4 @@
         <param name="base_frame" value="base_footprint"/>
     </node>
     
-    <!-- rviz -->
-    <arg name="rvizconfig" default="$(find wpb_home_tutorials)/rviz/slam.rviz" />
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
-
 </launch>

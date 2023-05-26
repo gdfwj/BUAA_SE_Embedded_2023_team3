@@ -38,11 +38,7 @@ class CreateMap:
         
     # 保存地图：msg表示地图路径
     def save(self, req):
-        if not os.path.exists(req.request):
-            return BaseResponse("地图不存在")
-
         os.system('rosrun map_server map_saver -f %s' % req.request)
-
         terminate_process(self.pid)
         self.pid = -1
         return BaseResponse("地图保存成功")
