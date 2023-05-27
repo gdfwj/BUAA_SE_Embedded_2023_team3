@@ -75,7 +75,7 @@ class Controller:
         client = rospy.ServiceProxy('/control/create_map/save', Base)
         rospy.wait_for_service('/control/create_map/save')
         if params['use_tkinter'] and map_id == None:
-            map_id = tkinterUI.t.get()
+            map_id = tkinterUI.t1.get()
         save_path = params['pkg_path'] + '/maps/map' + str(map_id)
         resp = client(save_path)
         loginfo(resp.response)
@@ -89,7 +89,7 @@ class Controller:
         client = rospy.ServiceProxy('/control/mark/edit', Base)
         rospy.wait_for_service('/control/mark/edit')
         if params['use_tkinter'] and map_id == None:
-            map_id = tkinterUI.t.get()
+            map_id = tkinterUI.t1.get()
         resp = client(str(map_id))
         loginfo(resp.response)
     
@@ -98,12 +98,14 @@ class Controller:
 
         Args:
             map_id (int): 地图ID
+            label (str): 保存的航点ID
         """
-        client = rospy.ServiceProxy('/control/mark/save', Base)
+        client = rospy.ServiceProxy('/control/mark/save', Conn)
         rospy.wait_for_service('/control/mark/save')
         if params['use_tkinter'] and map_id == None:
-            map_id = tkinterUI.t.get()
-        resp = client(str(map_id))
+            map_id = tkinterUI.t1.get()
+            label = tkinterUI.t2.get()
+        resp = client("", int(map_id), label)
         loginfo(resp.response)
 
     def navigation_init(self, map_id=None):
@@ -115,7 +117,7 @@ class Controller:
         client = rospy.ServiceProxy('/control/navigation/init', Base)
         rospy.wait_for_service('/control/navigation/init')
         if params['use_tkinter'] and map_id == None:
-            map_id = tkinterUI.t.get()
+            map_id = tkinterUI.t1.get()
         # map_path = params['pkg_path'] + '/maps/map' + str(map_id) + '.yaml'
         resp = client(str(map_id))
         loginfo(resp.response)
@@ -124,7 +126,7 @@ class Controller:
         client = rospy.ServiceProxy('/control/navigation/begin', Base)
         rospy.wait_for_service('/control/navigation/begin')
         if params['use_tkinter'] and dst == None:
-            dst = tkinterUI.t.get()
+            dst = tkinterUI.t1.get()
         resp = client(str(dst))
         loginfo(resp.response)
 
@@ -161,11 +163,11 @@ class Controller:
         self.grab()
         self.navigation_begin(dst2)
 
-
     def exit(self):
         terminate_process(self.init_pid)
         if params['use_tkinter']:
             tkinterUI.window.destroy()
+        exit(0)
 
 
 class TkinterUI:
@@ -194,8 +196,10 @@ class TkinterUI:
         b4.pack()
         b5 = tkinter.Button(frame,text="退出",command=controller.exit)
         b5.pack()
-        self.t = tkinter.Entry(frame)
-        self.t.pack()
+        self.t1 = tkinter.Entry(frame)
+        self.t1.pack()
+        self.t2 = tkinter.Entry(frame)
+        self.t2.pack()
 
         l = tkinter.Label(frame, text='输出信息', font=('微软雅黑', 10, 'bold'), width=500, justify='left', anchor='w')
         l.pack()

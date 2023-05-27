@@ -7,6 +7,7 @@ import multiprocessing
 from patch_embedding.srv import Base, BaseResponse
 import os
 import signal
+from PIL import Image
 from util import terminate_process
 
 
@@ -38,7 +39,13 @@ class CreateMap:
         
     # 保存地图：msg表示地图路径
     def save(self, req):
-        os.system('rosrun map_server map_saver -f %s' % req.request)
+        map_name = req.request      # 没有后缀
+        os.system('rosrun map_server map_saver -f %s' % map_name)
+
+        # 先转为png，然后crop
+        os.system('convert ' + map_name + '.pgm ' + map_name + '.png')
+        Image.open(map_name + '.png').crop((1850, 1850, 2150, 2150)).save(map_name + '.png')
+
         terminate_process(self.pid)
         self.pid = -1
         return BaseResponse("地图保存成功")
