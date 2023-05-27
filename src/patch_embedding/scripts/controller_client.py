@@ -127,6 +127,9 @@ class ControllerClient:
         # terminate_process(self.rviz_pid)
         # self.rviz_pid = -1
 
+    def pass_obj(self):
+        resp = self.client("pass_obj", 0, "")
+
     def fetch(self, dst1, dst2):
         resp = self.client("fetch", 0, "")
 
@@ -160,6 +163,8 @@ class TkinterUI:
         b8.pack()
         b4 = tkinter.Button(frame,text="抓取",command=controller.grab)
         b4.pack()
+        b8 = tkinter.Button(frame,text="递物",command=controller.pass_obj)
+        b8.pack()
         b5 = tkinter.Button(frame,text="退出",command=controller.exit)
         b5.pack()
         self.t = tkinter.Entry(frame)

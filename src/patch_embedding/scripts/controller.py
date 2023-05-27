@@ -50,6 +50,8 @@ class Controller:
             getattr(self, func_name)()
         elif id == -1:
             getattr(self, func_name)(arg)
+        elif func_name == 'save_mark':
+            getattr(self, func_name)(id, arg)
         else:
             getattr(self, func_name)(id)
         return ConnResponse("调用成功")
@@ -89,7 +91,7 @@ class Controller:
         resp = client(str(map_id))
         loginfo(resp.response)
     
-    def save_mark(self, map_id=None):
+    def save_mark(self, map_id=None, label=None):
         """保存航点。需传入地图id
 
         Args:

@@ -54,7 +54,7 @@ class Grab:
         global pass_finished
         # req.request如果为grap
         behaviors_pub = rospy.Publisher("/wpb_home/behaviors",String ,queue_size = 30)
-        if str(req.request) == "grap":
+        if str(req.request) == "grab":
             print("ready to grap")
             # 注意，rospy中，回调函数是单独开一个线程
             res_sub = rospy.Subscriber("/wpb_home/grab_result", String, self.cb_grab_result, queue_size=30)
