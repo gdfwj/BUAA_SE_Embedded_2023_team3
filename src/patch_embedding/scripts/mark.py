@@ -4,9 +4,11 @@
 import rospy
 import time
 import multiprocessing
-from patch_embedding.srv import Base, BaseResponse
+from patch_embedding.srv import Base, BaseResponse, Conn, ConnResponse
 import os
+import io
 import signal
+from xml.dom.minidom import parse
 from util import terminate_process
 
 
@@ -16,7 +18,7 @@ class Mark:
         rospy.loginfo("mark start!")
 
         rospy.Service('/control/mark/edit', Base, self.edit)
-        rospy.Service('/control/mark/save', Base, self.save)
+        rospy.Service('/control/mark/save', Conn, self.save)
 
         self.pid = -1
         self.map_server_pid = -1
@@ -53,16 +55,26 @@ class Mark:
         return BaseResponse("开始编辑")
 
     def save(self, req):
-        mark_path = rospy.get_param("pkg_path") + '/marks/waypoints' + req.request + '.xml'
+        mark_path = rospy.get_param("pkg_path") + '/marks/waypoints' + str(req.id) + '.xml'
         os.system('rosrun waterplus_map_tools wp_saver')
         os.system('mv ~/waypoints.xml ' + mark_path)
+
+        # 修改xml
+        doc = parse(mark_path)
+        root = doc.documentElement
+        points = root.getElementsByTagName('Waypoint')
+        for p in points:
+            if p.getElementsByTagName('Name')[0].childNodes[0].data == '1':
+                p.getElementsByTagName('Name')[0].childNodes[0].data = req.arg
+        with open(mark_path, 'w') as f:
+            doc.writexml(f, encoding='utf-8')
 
         terminate_process(self.pid)
         terminate_process(self.map_server_pid)
         self.pid = -1
         self.map_server_pid = -1
 
-        return BaseResponse("航点保存成功")
+        return ConnResponse("航点保存成功")
 
 if __name__ == '__main__':
     Mark()

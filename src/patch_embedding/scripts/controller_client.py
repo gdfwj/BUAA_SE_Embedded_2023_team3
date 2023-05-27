@@ -185,8 +185,10 @@ class TkinterUI:
         b8.pack()
         b5 = tkinter.Button(frame,text="退出",command=controller.exit)
         b5.pack()
-        self.t = tkinter.Entry(frame)
-        self.t.pack()
+        self.t1 = tkinter.Entry(frame)
+        self.t1.pack()
+        self.t2 = tkinter.Entry(frame)
+        self.t2.pack()
 
         l = tkinter.Label(frame, text='输出信息', font=('微软雅黑', 10, 'bold'), width=500, justify='left', anchor='w')
         l.pack()
