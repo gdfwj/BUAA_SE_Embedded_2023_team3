@@ -36,6 +36,9 @@ class Grab:
             pass_finished = True
 
     def handle_grab(self, req):
+        """抓取+递物函数
+        :param req: 由主控发来请求，如果为grab则为抓取，如果为pass则为递物
+        """
         # if rospy.get_param("service_start") == False:
         #     return BaseResponse("未开启服务")
         
@@ -55,7 +58,8 @@ class Grab:
         # req.request如果为grap
         behaviors_pub = rospy.Publisher("/wpb_home/behaviors",String ,queue_size = 30)
         if str(req.request) == "grab":
-            print("ready to grap")
+            # 抓取
+            print("ready to grab")
             # 注意，rospy中，回调函数是单独开一个线程
             res_sub = rospy.Subscriber("/wpb_home/grab_result", String, self.cb_grab_result, queue_size=30)
 
@@ -72,6 +76,7 @@ class Grab:
                     return BaseResponse("抓取完毕")
                 rate.sleep()
         elif str(req.request) == "pass":
+            # 递物
             print("ready to pass")
             res_sub = rospy.Subscriber("/wpb_home/pass_result", String, self.cb_pass_result, queue_size=30)
             rospy.logwarn("[main] wpb_home_pass_client")
