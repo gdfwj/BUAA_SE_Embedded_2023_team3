@@ -50,7 +50,7 @@
       </el-row>
 
 <!--      新建地图弹窗-->
-      <el-dialog title="新建地图中..." :visible.sync="dialogVisible" width="50%">
+      <el-dialog title="新建地图中..." :visible.sync="this.dialogVisible" width="50%" :append-to-body="true">
         <el-row style="height: 80%; margin-left: 15%">
           <el-image
             style="width: 70%; height: 70%; padding-left: 8%; align-content: center"

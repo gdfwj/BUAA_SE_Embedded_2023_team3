@@ -4,6 +4,7 @@ src/waterplus_map_tools/
 src/wpb_home/
 src/wpr_simulation/
 src/xfyun_waterplus/
+src/iai_kinect2/
 src/.vscode/
 .idea/
 .vscode/

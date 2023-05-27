@@ -22,7 +22,7 @@ tkinterUI = None
 #服务端ip地址、端口号
 ip = '192.168.8.100'
 # ip = 'localhost'
-port = 8765
+port = 10086
 
 async def echo(websocket, path):
     async for message in websocket:
@@ -131,12 +131,18 @@ class ControllerClient:
         self.rviz_pid = -1
 
     def grab(self):
-        p = multiprocessing.Process(target=self.rviz, args=('rviz_navigation.launch',))
-        p.start()
-        self.rviz_pid = p.pid
+        # p = multiprocessing.Process(target=self.rviz, args=('rviz_grab.launch',))
+        # p.start()
+        # self.rviz_pid = p.pid
         resp = self.client("grab", 0, "")
-        terminate_process(self.rviz_pid)
-        self.rviz_pid = -1
+        # terminate_process(self.rviz_pid)
+        # self.rviz_pid = -1
+
+    def pass_obj(self):
+        resp = self.client("pass_obj", 0, "")
+
+    def fetch(self, dst1, dst2):
+        resp = self.client("fetch", 0, "")
 
     def fetch(self, label_id1, label_id2):
         # 实现导航+取物一体化
@@ -146,8 +152,7 @@ class ControllerClient:
         resp = self.client("pass_obj", 0, "")
 
     def exit(self):
-        if rospy.get_param('use_tkinter'):
-            tkinterUI.window.destroy()
+        exit(0)
     
     def rviz(self, launch):
         os.system("roslaunch patch_embedding " + launch)
@@ -176,6 +181,8 @@ class TkinterUI:
         b8.pack()
         b4 = tkinter.Button(frame,text="抓取",command=controller.grab)
         b4.pack()
+        b8 = tkinter.Button(frame,text="递物",command=controller.pass_obj)
+        b8.pack()
         b5 = tkinter.Button(frame,text="退出",command=controller.exit)
         b5.pack()
         self.t = tkinter.Entry(frame)
@@ -202,8 +209,7 @@ class TkinterUI:
 
 
 def loginfo(text):
-    # if rospy.get_param('use_tkinter'):
-    #     tkinterUI.log(text.data)
+    # tkinterUI.log(text.data)
     rospy.loginfo(text.data)
 
 def quit(signum, frame):
@@ -216,11 +222,13 @@ if __name__ == '__main__':
     signal.signal(signal.SIGINT, quit)
     controller = ControllerClient()
 
-    # if rospy.get_param('use_tkinter'):
+    # 开启面板
+    # def launch_tkinter():
     #     tkinterUI = TkinterUI(controller)
     #     tkinterUI.loop()
-    #     rospy.spin()
-    # else :
+    # p = multiprocessing.Process(target=launch_tkinter)
+    # p.start()
+
     # 注册服务端
     asyncio.get_event_loop().run_until_complete(websockets.serve(echo, ip, port))
     asyncio.get_event_loop().run_forever()
