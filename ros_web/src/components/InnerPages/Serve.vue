@@ -26,6 +26,7 @@
 
     <el-main>
       <!--    地图部分-->
+      <div v-if="maps.length > 0">
       <el-row>
         <el-col :span="7" :gutter="20" v-for="(map, index) in maps" :key="map.map_id" style="padding-left: 4%">
 <!--          地图card-->
@@ -57,6 +58,7 @@
           </el-card>
         </el-col>
       </el-row>
+      </div>
 
 <!--      具体服务操作-->
       <el-dialog title="执行服务" :visible.sync="dialogServe" width="60%">
