@@ -4,7 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4ad2010e-aaa6-4809-9151-ca7b9b861a64" name="Changes" comment="" />
+    <list default="true" id="4ad2010e-aaa6-4809-9151-ca7b9b861a64" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/backend/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/backend/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/patch_embedding/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/patch_embedding/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/SDD-03-软件设计说明.doc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/SDP-03-软件开发计划.doc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/SRS-03-软件需求规格说明书.doc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/STP-03-软件测试计划.doc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/STR-03-软件测试报告.doc" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
