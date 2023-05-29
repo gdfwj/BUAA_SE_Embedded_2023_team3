@@ -5,6 +5,7 @@ src/wpb_home/
 src/wpr_simulation/
 src/xfyun_waterplus/
 src/iai_kinect2/
+src/rplidar_ros/
 src/.vscode/
 .idea/
 .vscode/
