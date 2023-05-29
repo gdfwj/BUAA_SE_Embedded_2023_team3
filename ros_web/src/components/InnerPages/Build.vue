@@ -17,6 +17,7 @@
     </el-header>
 <!--    地图部分-->
     <el-main>
+      <div v-if="maps.length > 0">
       <el-row>
         <el-col :span="7" :gutter="20" v-for="(map, index) in maps" :key="map.map_id" style="padding-left: 4%">
 <!--          地图card-->
@@ -48,7 +49,7 @@
           </el-card>
         </el-col>
       </el-row>
-
+      </div>
 <!--      新建地图弹窗-->
       <el-dialog title="新建地图中..." :visible.sync="this.dialogVisible" width="50%" :append-to-body="true">
         <el-row style="height: 80%; margin-left: 15%">

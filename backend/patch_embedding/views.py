@@ -303,7 +303,8 @@ class Fetch(View):
                 message = "object/fetch/"
                 webClient(message)
             else:
-                message = "object/allFetch"
+                message = "object/allFetch/"
+                print("**************************heher")
                 webClient(message, label_id1, label_id2)
             res['code'] = 200
         except Exception as e:
