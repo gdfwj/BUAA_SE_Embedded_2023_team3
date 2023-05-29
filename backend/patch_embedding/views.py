@@ -213,7 +213,7 @@ class SaveMark(View):
             sqlHelper.insert('tb_label', params_dict={'label_name': label_name, 'label_remark': label_remark,
                                                       'label_map': Map_id_now})
             label_id = sqlHelper.select('tb_label', listnames=['label_id'], cond_dict={"label_name": label_name})
-            label_id = label_id[0]
+            label_id = label_id[0][0]
             webClient(message, Map_id_now, label_id)
             res['code'] = 200
         except Exception as e:
