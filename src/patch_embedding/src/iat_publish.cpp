@@ -25,9 +25,15 @@ int resultFlag = 0;
 static void show_result(char *string, char is_over)
 {
     resultFlag = 1;
-    printf("\rResult: [ %s ]", string);
+    printf("\rResult: [ %s 1111111]", string);
     if (is_over)
         putchar('\n');
+    char res[300] = "rosrun patch_embedding voice_ctrl.py  ";
+    std::strcat(res, string);
+    std::strcat(res, "\n");
+    printf("\rResult: [ %s ]1111111", res);
+    // printf("\rResult: [ %s ]", res);
+    std::system(res);
 }
 
 static char *g_result = NULL;
