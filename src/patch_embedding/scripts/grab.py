@@ -73,6 +73,8 @@ class Grab:
                 if grab_finished == True:
                     terminate_process(p.pid)
                     grab_finished = False
+                    behavior_msg = "grab stop"
+                    behaviors_pub.publish(behavior_msg)
                     return BaseResponse("抓取完毕")
                 rate.sleep()
         elif str(req.request) == "pass":
@@ -88,6 +90,8 @@ class Grab:
                 if pass_finished == True:
                     terminate_process(p.pid)
                     pass_finished = False
+                    behavior_msg = "pass stop"
+                    behaviors_pub.publish(behavior_msg)
                     return BaseResponse("传递完毕")
                 rate.sleep()
         else :
