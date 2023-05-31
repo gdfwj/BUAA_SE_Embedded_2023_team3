@@ -73,8 +73,8 @@ class Grab:
                 if grab_finished == True:
                     terminate_process(p.pid)
                     grab_finished = False
-                    behavior_msg = "grab stop"
-                    behaviors_pub.publish(behavior_msg)
+                    # behavior_msg = "grab stop"
+                    # behaviors_pub.publish(behavior_msg)
                     return BaseResponse("抓取完毕")
                 rate.sleep()
         elif str(req.request) == "pass":

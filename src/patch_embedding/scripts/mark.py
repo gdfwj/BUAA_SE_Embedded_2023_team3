@@ -74,7 +74,7 @@ class Mark:
         self.pid = -1
         self.map_server_pid = -1
 
-        return ConnResponse("航点保存成功")
+        return ConnResponse("航点保存成功" + req.arg)
 
 if __name__ == '__main__':
     Mark()
