@@ -26,6 +26,9 @@
 
     <el-main>
       <!--    地图部分-->
+      <div v-if="maps.length === 0">
+        <el-empty description="没有数据"></el-empty>
+      </div>
       <div v-if="maps.length > 0">
       <el-row>
         <el-col :span="7" :gutter="20" v-for="(map, index) in maps" :key="map.map_id" style="padding-left: 4%">
