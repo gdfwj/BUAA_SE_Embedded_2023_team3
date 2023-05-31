@@ -27,7 +27,7 @@ if __name__ == "__main__":
         os.system('rostopic pub /tts_text std_msgs/String "开始导航"')
         client = rospy.ServiceProxy('/control/web', Conn)
         rospy.wait_for_service('/control/web')
-        resp = client("navigation_begin", 1, "")
+        resp = client("navigation_begin", 2, "")
         # pub.publish("已经到达位置")
         os.system('rostopic pub /tts_text std_msgs/String "已经到达位置"')
         resp = client("navigation_finish", 0, "")
