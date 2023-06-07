@@ -30,7 +30,7 @@ static void show_result(char *string, char is_over)
         putchar('\n');
     char res[300] = "rosrun patch_embedding voice_ctrl.py  ";
     std::strcat(res, string);
-    std::strcat(res, "\n");
+    // std::strcat(res, "\n");
     printf("\rResult: [ %s ]1111111", res);
     // printf("\rResult: [ %s ]", res);
     std::system(res);
