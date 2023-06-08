@@ -13,6 +13,8 @@
         <rosparam file="$(find wpb_home_bringup)/config/wpb_home.yaml" command="load" />
     </node>
 
+    <node pkg="wpb_home_behaviors" type="wpb_home_pass_server" name="wpb_home_pass_server"/>
+
     <!-- Run Kinect -->
     <!--************************ kinect ************************-->
     <arg name="base_name" default="kinect2" />
