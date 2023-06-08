@@ -25,9 +25,16 @@ int resultFlag = 0;
 static void show_result(char *string, char is_over)
 {
     resultFlag = 1;
-    printf("\rResult: [ %s ]", string);
+    printf("\rResult: [ %s 1111111]", string);
     if (is_over)
         putchar('\n');
+    char res[300] = "rosrun patch_embedding voice_ctrl.py  ";
+    std::strcat(res, "\'");
+    std::strcat(res, string);
+    std::strcat(res, "\'");
+    printf("\rResult: [ %s ]1111111", res);
+    // printf("\rResult: [ %s ]", res);
+    std::system(res);
 }
 
 static char *g_result = NULL;
@@ -122,6 +129,56 @@ static void demo_mic(const char *session_begin_params)
     sr_uninit(&iat);
 }
 
+void run(const std_msgs::String::ConstPtr &msg)
+{
+    ch = msg[0] printf("Pressed Key Value %d\n", ch);
+    if (ch == 32)
+    { // Space key
+        wakeupFlag = 1;
+    }
+    if (ch == 10)
+    { // Enter key
+        ROS_INFO("Node Exit.");
+        break;
+    }
+    if (wakeupFlag)
+    {
+        int ret = MSP_SUCCESS;
+        /* login params, please do keep the appid correct */
+        const char *login_params = "appid = 70404fa5, work_dir = ."; // appid need match with you SDK file
+
+        const char *session_begin_params =
+            "sub = iat, domain = iat, language = zh_cn, "
+            "accent = mandarin, sample_rate = 16000, "
+            "result_type = plain, result_encoding = utf8";
+
+        ret = MSPLogin(NULL, NULL, login_params);
+        if (MSP_SUCCESS != ret)
+        {
+            MSPLogout();
+            printf("MSPLogin failed , Error code %d.\n", ret);
+        }
+        printf("Demo recognizing the speech from microphone\n");
+        // printf("Speak in 10 seconds\n");
+        demo_mic(session_begin_params);
+        // printf("10 sec passed\n");
+        wakeupFlag = 0;
+        MSPLogout();
+    }
+    // 语音识别完成
+    if (resultFlag)
+    {
+        resultFlag = 0;
+        std_msgs::String msg;
+        msg.data = g_result;
+        iat_text_pub.publish(msg);
+    }
+    ROS_INFO("Press \"Space\" key to Start,Press \"Enter\" key to Exit.");
+    ros::spinOnce();
+    loop_rate.sleep();
+    count++;
+}
+
 int main(int argc, char *argv[])
 {
     ros::init(argc, argv, "iFlyAutoTransform");
@@ -138,56 +195,9 @@ int main(int argc, char *argv[])
     ROS_INFO("Press \"Space\" key to Start,Press \"Enter\" key to Exit.");
     int count = 0;
     int ch;
-    while (ros::ok())
-    {
-        ch = getchar();
-        printf("Pressed Key Value %d\n", ch);
-        if (ch == 32)
-        { // Space key
-            wakeupFlag = 1;
-        }
-        if (ch == 10)
-        { // Enter key
-            ROS_INFO("Node Exit.");
-            break;
-        }
-        if (wakeupFlag)
-        {
-            int ret = MSP_SUCCESS;
-            /* login params, please do keep the appid correct */
-            const char *login_params = "appid = 70404fa5, work_dir = ."; // appid need match with you SDK file
-
-            const char *session_begin_params =
-                "sub = iat, domain = iat, language = zh_cn, "
-                "accent = mandarin, sample_rate = 16000, "
-                "result_type = plain, result_encoding = utf8";
-
-            ret = MSPLogin(NULL, NULL, login_params);
-            if (MSP_SUCCESS != ret)
-            {
-                MSPLogout();
-                printf("MSPLogin failed , Error code %d.\n", ret);
-            }
-            printf("Demo recognizing the speech from microphone\n");
-            // printf("Speak in 10 seconds\n");
-            demo_mic(session_begin_params);
-            // printf("10 sec passed\n");
-            wakeupFlag = 0;
-            MSPLogout();
-        }
-        // 语音识别完成
-        if (resultFlag)
-        {
-            resultFlag = 0;
-            std_msgs::String msg;
-            msg.data = g_result;
-            iat_text_pub.publish(msg);
-        }
-        ROS_INFO("Press \"Space\" key to Start,Press \"Enter\" key to Exit.");
-        ros::spinOnce();
-        loop_rate.sleep();
-        count++;
-    }
+    ros::Subscriber sub = n.subscribe<std_msgs::String>("/voice_input_control", 10, run);
+    ros::spin();
+    return 0;
 
 exit:
     tcsetattr(0, TCSANOW, &tms_old);
