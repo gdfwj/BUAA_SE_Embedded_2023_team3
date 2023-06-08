@@ -46,6 +46,9 @@ class CreateMap:
         os.system('convert ' + map_name + '.pgm ' + map_name + '.png')
         Image.open(map_name + '.png').crop((1850, 1850, 2150, 2150)).save(map_name + '.png')
 
+        # ssh传文件
+        os.system("sshpass -p \"q\" scp jinghongbin@192.168.1.100:" + map_name + ".png ~/SE/team03-project/src/patch_embedding/maps")
+
         terminate_process(self.pid)
         self.pid = -1
         return BaseResponse("地图保存成功")
