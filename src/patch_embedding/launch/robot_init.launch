@@ -35,10 +35,10 @@
   </node>
 
   <!-- joy node -->
-  <node respawn="true" pkg="joy" type="joy_node" name="wpb_home_joy">
+  <!-- <node respawn="true" pkg="joy" type="joy_node" name="wpb_home_joy">
     <param name="dev" type="string" value="/dev/input/js0" />
     <param name="deadzone" value="0.12" />
-  </node>
+  </node> -->
 
   <!-- Axes Velcmd -->
   <param name="axis_linear" value="1" type="int" />
