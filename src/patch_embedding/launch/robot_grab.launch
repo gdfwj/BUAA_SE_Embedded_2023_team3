@@ -5,8 +5,8 @@
     <!-- <include file="$(find wpb_home_behaviors)/launch/grab_monitor.launch" /> -->
 
     <!-- Run wpb_home_grab_client node -->
-    <node name="wpb_home_mani_ctrl" pkg="wpb_home_tutorials" type="wpb_home_grab_client"
-        output="screen" />
+    <!-- <node name="wpb_home_mani_ctrl" pkg="wpb_home_tutorials" type="wpb_home_grab_client"
+        output="screen" /> -->
 
     <node pkg="wpb_home_behaviors" type="wpb_home_grab_server" name="wpb_home_grab_server">
         <param name="start" type="bool" value="false" />
