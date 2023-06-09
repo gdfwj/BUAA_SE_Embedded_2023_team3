@@ -335,23 +335,15 @@ class PassObj(View):
 
 class VoiceChange(View):
     def post(self, request):
-        global VOICE_ON
-        res = {'code': 400, 'msg': '', 'data': []}
+        res = {'code': 400, 'msg': '语音服务成功', 'data': []}
         # request = getRequest(request)
         try:
-            # TODO:
+            message = "control/voice/"
+            webClient(message)
             res['code'] = 200
-            if VOICE_ON:
-                res['msg'] = '关闭语音服务成功'
-            else:
-                res['msg'] = '开启语音服务成功'
-            VOICE_ON = not VOICE_ON
         except Exception as e:
             print(e)
-            if VOICE_ON:
-                res['msg'] = '关闭语音服务失败'
-            else:
-                res['msg'] = '开启语音服务失败'
+            res['msg'] = '语音服务失败'
         return JsonResponse(res)
 
 

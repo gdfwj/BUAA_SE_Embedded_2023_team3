@@ -41,6 +41,7 @@ class Controller:
             rospy.set_param(key, params[key])
         
         rospy.Service('/control/web', Conn, self.web_callback)
+        self.voice_pub = rospy.Publisher('/voice_input_control', String, queue_size=10)
 
     def web_callback(self, req):
         func_name = req.type
@@ -162,6 +163,10 @@ class Controller:
         self.navigation_begin(dst1)
         self.grab()
         self.navigation_begin(dst2)
+
+    def voice(self):
+        vspace = " "
+        self.voice_pub.publish(vspace)
 
     def exit(self):
         terminate_process(self.init_pid)

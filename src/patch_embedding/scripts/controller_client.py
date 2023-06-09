@@ -85,6 +85,9 @@ async def echo(websocket, path):
         elif message == "object/pass/":
             controller.pass_obj()
             message = "I got your message: {}".format(message)
+        elif message == "control/voice/":
+            controller.voice()
+            message = "I got your message: {}".format(message)
         else :
             message = "Invalid message!!!"
         await websocket.send(message)
@@ -151,6 +154,10 @@ class ControllerClient:
 
     def pass_obj(self):
         resp = self.client("pass_obj", "0", "")
+
+    def voice(self):
+        """语音服务"""
+        resp = self.client("voice", "0", "")
 
     def exit(self):
         exit(0)
