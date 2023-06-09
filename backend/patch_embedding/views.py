@@ -41,7 +41,7 @@ def webClient(message, *args):
 
 
 def checkWord(inputs: str):
-    string = "~!@#$%^&*()_+-*/<>,.[]\/"
+    string = "~!:@#$%^&*()_+-*/<>,.[]\/"
     for i in string:
         if i in inputs:
             raise Exception('check failed')
@@ -214,7 +214,7 @@ class SaveMark(View):
                                                       'label_map': Map_id_now})
             label_id = sqlHelper.select('tb_label', listnames=['label_id'], cond_dict={"label_name": label_name})
             label_id = label_id[0][0]
-            webClient(message, Map_id_now, label_id)
+            webClient(message, Map_id_now, label_name)
             res['code'] = 200
         except Exception as e:
             print(e)
@@ -242,6 +242,7 @@ class ServiceInit(View):
         res = {'code': 400, 'msg': '初始化服务成功', 'data': []}
         request = getRequest(request)
         map_id = int(request.get("map_id"))
+        Map_id_now = map_id
         try:
             message = "service/init/"
             webClient(message, map_id)
@@ -259,11 +260,11 @@ class Navigation(View):
         label_id = int(request.get("label_id"))
         # label_name = request.get("label_name")
         try:
-            # sqlHelper = SqlHelper()
-            # results = sqlHelper.select("tb_label", listnames=["label_id"], cond_dict={"label_name":label_name})
-            # label_id = int(results[0][0])
+            sqlHelper = SqlHelper()
+            results = sqlHelper.select("tb_label", listnames=["label_name"], cond_dict={"label_id":label_id})
+            label_name = results[0][0]
             message = "navigation/begin/"
-            webClient(message, label_id)
+            webClient(message, label_name)
             res['code'] = 200
         except Exception as e:
             print(e)
@@ -304,8 +305,14 @@ class Fetch(View):
                 webClient(message)
             else:
                 message = "object/allFetch/"
-                print("**************************heher")
-                webClient(message, label_id1, label_id2)
+                # print("**************************heher")
+                sqlHelper = SqlHelper()
+                results = sqlHelper.select("tb_label", listnames=["label_name"], cond_dict={"label_id": label_id1})
+                label_name1 = results[0][0]
+                sqlHelper = SqlHelper()
+                results = sqlHelper.select("tb_label", listnames=["label_name"], cond_dict={"label_id": label_id2})
+                label_name2 = results[0][0]
+                webClient(message, label_name1, label_name2)
             res['code'] = 200
         except Exception as e:
             print(e)

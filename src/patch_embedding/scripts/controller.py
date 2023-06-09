@@ -46,11 +46,11 @@ class Controller:
         func_name = req.type
         id = req.id
         arg = req.arg
-        if id == 0:
+        if id == "0":
             getattr(self, func_name)()
         elif str(func_name) == 'fetch':
             getattr(self, func_name)(id, int(arg))
-        elif id == -1:
+        elif id == "-1":
             getattr(self, func_name)(arg)
         elif func_name == 'save_mark':
             getattr(self, func_name)(id, arg)

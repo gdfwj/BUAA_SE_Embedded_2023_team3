@@ -47,11 +47,11 @@ async def echo(websocket, path):
                 message = "I got your message: {}".format(message)
         elif re.match("mark/save/:", message):
             map_id = message.split(":")[1]
-            label_id = message.split(":")[2]
-            if map_id == None or label_id == None:
+            label_name = message.split(":")[2]
+            if map_id == None or label_name == None:
                 message = "Wrong, please send id"
             else :
-                controller.save_mark(int(map_id), str(label_id))
+                controller.save_mark(int(map_id), label_name)
                 message = "I got your message: {}".format(message)
         elif message == 'object/fetch/':
             controller.grab()
@@ -64,22 +64,23 @@ async def echo(websocket, path):
                 controller.navigation_init(int(result.group()))
                 message = "I got your message: {}".format(message)
         elif re.match("navigation/begin/:", message):
-            result = re.search("[0-9]+", message)
-            if result.group() == None:
-                message = "Wrong, please send map_id"
+            # result = re.search("[0-9]+", message)
+            label_name = message.split(":")[1]
+            if label_name == None:
+                message = "Wrong, please send label_name"
             else :
-                controller.navigation_begin(int(result.group()))
+                controller.navigation_begin(label_name)
                 message = "I got your message: {}".format(message)
         elif message == 'navigation/finish/':
             controller.navigation_finish()
             message = "I got your message: {}".format(message)
         elif re.match('object/allFetch/:', message):
-            label_id1 = message.split(":")[1]
-            label_id2 = message.split(":")[2]
-            if label_id1 == None or label_id2 == None:
-                message = "Wrong, please send id"
+            label_name1 = message.split(":")[1]
+            label_name2 = message.split(":")[2]
+            if label_name1 == None or label_name2 == None:
+                message = "Wrong, please send label_name"
             else:
-                controller.fetch(int(label_id1), label_id2)
+                controller.fetch(label_name1, label_name2)
             message = "I got your message: {}".format(message)
         elif message == "object/pass/":
             controller.pass_obj()
@@ -98,10 +99,10 @@ class ControllerClient:
         p = multiprocessing.Process(target=self.rviz, args=('rviz_create_map.launch',))
         p.start()
         self.rviz_pid = p.pid
-        resp = self.client("create_map_start", 0, "")
+        resp = self.client("create_map_start", "0", "")
 
     def create_map_save(self, map_id=None):
-        resp = self.client("create_map_save", map_id, "")
+        resp = self.client("create_map_save", str(map_id), "")
         terminate_process(self.rviz_pid)
         self.rviz_pid = -1
 
@@ -109,10 +110,10 @@ class ControllerClient:
         p = multiprocessing.Process(target=self.rviz, args=('rviz_mark.launch',))
         p.start()
         self.rviz_pid = p.pid
-        resp = self.client("edit_mark", map_id, "")
+        resp = self.client("edit_mark", str(map_id), "")
 
     def save_mark(self, map_id=None, label=None):
-        resp = self.client("save_mark", map_id, label)
+        resp = self.client("save_mark", str(map_id), label)
         terminate_process(self.rviz_pid)
         self.rviz_pid = -1
 
@@ -120,13 +121,13 @@ class ControllerClient:
         p = multiprocessing.Process(target=self.rviz, args=('rviz_navigation.launch',))
         p.start()
         self.rviz_pid = p.pid
-        resp = self.client("navigation_init", map_id, "")
+        resp = self.client("navigation_init", str(map_id), "")
 
     def navigation_begin(self, dst=None):
-        resp = self.client("navigation_begin", dst, "")
+        resp = self.client("navigation_begin", str(dst), "")
 
     def navigation_finish(self):
-        resp = self.client("navigation_finish", 0, "")
+        resp = self.client("navigation_finish", "0", "")
         terminate_process(self.rviz_pid)
         self.rviz_pid = -1
 
@@ -134,22 +135,22 @@ class ControllerClient:
         # p = multiprocessing.Process(target=self.rviz, args=('rviz_grab.launch',))
         # p.start()
         # self.rviz_pid = p.pid
-        resp = self.client("grab", 0, "")
+        resp = self.client("grab", "0", "")
         # terminate_process(self.rviz_pid)
         # self.rviz_pid = -1
 
     def pass_obj(self):
-        resp = self.client("pass_obj", 0, "")
+        resp = self.client("pass_obj", "0", "")
 
     def fetch(self, dst1, dst2):
-        resp = self.client("fetch", 0, "")
+        resp = self.client("fetch", "0", "")
 
-    def fetch(self, label_id1, label_id2):
+    def fetch(self, label_name1,  label_name2):
         # 实现导航+取物一体化
-        resp = self.client("fetch", label_id1, str(label_id2))
+        resp = self.client("fetch", str(label_name1), str(label_name2))
 
     def pass_obj(self):
-        resp = self.client("pass_obj", 0, "")
+        resp = self.client("pass_obj", "0", "")
 
     def exit(self):
         exit(0)
