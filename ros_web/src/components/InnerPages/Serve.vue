@@ -10,17 +10,6 @@
         <el-col :span="14">
           <space></space>
         </el-col>
-        <el-col :span="7" style="float: right; align-content: center;text-align: center; padding-right: 5%">
-          <el-switch
-            style="display: block"
-            v-model="switchValue"
-            active-color="#13ce66"
-            inactive-color="#FFABAB"
-            active-text="人工标识"
-            inactive-text="语言控制"
-            @click.native="changeVoice">
-          </el-switch>
-        </el-col>
       </el-row>
     </el-header>
 
@@ -65,6 +54,19 @@
 
 <!--      具体服务操作-->
       <el-dialog title="执行服务" :visible.sync="dialogServe" width="60%">
+        <el-row>
+          <el-col :span="7" style="float: right; align-content: center;text-align: center; padding-right: 5%">
+            <el-switch
+              style="display: block"
+              v-model="switchValue"
+              active-color="#13ce66"
+              inactive-color="#FFABAB"
+              active-text="人工标识"
+              inactive-text="语言控制"
+              >
+            </el-switch>
+          </el-col>
+        </el-row>
 <!--        地图显示-->
         <el-row style="padding:5px; margin: 5px">
           <el-image
@@ -176,7 +178,7 @@
         <div v-if="switchValue == false">
           <el-row style="padding-top: 20px; padding-left: 5%; padding-right: 5%">
             <el-input placeholder="正在说话中..." v-model="inputString" class="input-with-select">
-              <el-button slot="append" icon="el-icon-check"></el-button>
+              <el-button slot="append" icon="el-icon-check" @click.native="changeVoice"></el-button>
             </el-input>
           </el-row>
         </div>
@@ -304,6 +306,12 @@ export default {
       this.maps = [
         {
           map_id: 1,
+          map_name: 'firmap',
+          map_time: 20230507,
+          map_remark: 'hello map!'
+        },
+        {
+          map_id: 2,
           map_name: 'firmap',
           map_time: 20230507,
           map_remark: 'hello map!'
