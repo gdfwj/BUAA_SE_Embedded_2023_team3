@@ -165,7 +165,8 @@ class Controller:
         self.navigation_begin(dst2)
 
     def voice(self):
-        vspace = " "
+        vspace = String()
+        vspace.data = " "
         self.voice_pub.publish(vspace)
 
     def exit(self):
