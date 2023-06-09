@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 # coding=utf-8
 import rospy
-from patch_embedding.srv import Base
+from patch_embedding.srv import Base, Conn
 from std_msgs.msg import String
 import sys
 
@@ -21,21 +21,26 @@ def get_text_type(text):
         return 2, 0
     elif '渴' in text:
         return 3, 0
-    elif 'to' in text and 'then' in text:
+    elif 'to' in text and 'then go to' in text:
         ind1 = text.index("to")
         ind2 = text.index("then")
         x = text.split()
-        for i in range(len(x)):
+        for i in range(len(x)-2):
             if x[i]=='to':
                 t.append(x[i+1])
-            if x[i]=='then':
-                t.append(x[i+1])
+            if x[i]=='then' and x[i+1]=='go' and x[i+2]=='to':
+                if x[i+3][-1]=='.':
+                    t.append(x[i+3][:-1])
+                else:
+                    t.append(x[i+3])
         return 4, t
     elif 'to' in text:
         x = text.split()
         for i in range(len(x)):
             if x[i]=='to':
-                t.append(x[i+1])
+                if x[i+1][-1]=='.':
+                    return 1,x[i+1][:-1]
+                return 1, x[i+1]
     elif "grab" in text:
         return 2, 0
     elif 'thirsty' in text:
@@ -44,7 +49,7 @@ def get_text_type(text):
 
 def pub_tts(text):
     rate = rospy.Rate(1)
-    pub = rospy.Publisher("tts_text", String, queue_size=1000)
+    pub = rospy.Publisher("tts_text_", String, queue_size=1000)
     pub_msg = String()
     pub_msg.data = text
     pub.publish(pub_msg)
@@ -99,7 +104,7 @@ if __name__ == "__main__":
         # os.system('rostopic pub /tts_text std_msgs/String "开始抓取"')
         client = rospy.ServiceProxy('/control/web', Conn)
         rospy.wait_for_service('/control/web')
-        resp = client("grab", 0, "")
+        resp = client("grab", "0", "")
         pub_tts("抓取完成")
         # os.system('rostopic pub /tts_text std_msgs/String "抓取完成"')
     elif type == 3:
@@ -123,7 +128,8 @@ if __name__ == "__main__":
         # resp = client("navigation_begin", id1, "")
         pub_tts("已经到达抓取位置")
         rospy.wait_for_service('/control/web')
-        resp = client("grab", 0, "")
+        client2 = rospy.ServiceProxy('/control/web', Conn)
+        resp = client2("grab", "0", "")
         pub_tts("抓取完成")
         pub_tts("开始导航"+msg[1])
         client = rospy.ServiceProxy('/control/navigation/begin', Base)

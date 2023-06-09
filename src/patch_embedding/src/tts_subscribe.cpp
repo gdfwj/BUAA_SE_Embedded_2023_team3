@@ -205,7 +205,7 @@ int main(int argc, char *argv[])
 
     ros::init(argc, argv, "TextToSpeech");
     ros::NodeHandle n;
-    ros::Subscriber tts_text_pub = n.subscribe("tts_text", 1000, ttsCallback);
+    ros::Subscriber tts_text_pub = n.subscribe("tts_text_", 1000, ttsCallback);
     ros::spin();
 
 exit:

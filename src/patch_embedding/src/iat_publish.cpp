@@ -131,7 +131,8 @@ static void demo_mic(const char *session_begin_params)
 
 void run(const std_msgs::String::ConstPtr &msg)
 {
-    ch = msg[0] printf("Pressed Key Value %d\n", ch);
+    ch = msg->data[0];
+    printf("Pressed Key Value %d\n", ch);
     if (ch == 32)
     { // Space key
         wakeupFlag = 1;
