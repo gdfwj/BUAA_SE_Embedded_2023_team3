@@ -51,5 +51,6 @@
   <node pkg="patch_embedding" name="navigation" type="navigation.py" />
   <node pkg="patch_embedding" name="grab" type="grab.py" />
   <node pkg="patch_embedding" name="mark" type="mark.py" />
-
+  <include file="$(find patch_embedding)/launch/iat_publish.launch" />
+  <include file="$(find patch_embedding)/launch/tts_subscribe.launch" />
 </launch>

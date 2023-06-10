@@ -214,7 +214,7 @@ class SaveMark(View):
                                                       'label_map': Map_id_now})
             label_id = sqlHelper.select('tb_label', listnames=['label_id'], cond_dict={"label_name": label_name})
             label_id = label_id[0][0]
-            webClient(message, Map_id_now, label_name)
+            webClient(message, str(Map_id_now), label_name)
             res['code'] = 200
         except Exception as e:
             print(e)
