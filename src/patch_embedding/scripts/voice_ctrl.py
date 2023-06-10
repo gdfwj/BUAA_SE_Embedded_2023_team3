@@ -25,6 +25,7 @@ def get_text_type(text):
         ind1 = text.index("to")
         ind2 = text.index("then")
         x = text.split()
+	t = []
         for i in range(len(x)-2):
             if x[i]=='to':
                 t.append(x[i+1])
@@ -41,7 +42,7 @@ def get_text_type(text):
                 if x[i+1][-1]=='.':
                     return 1,x[i+1][:-1]
                 return 1, x[i+1]
-    elif "grab" in text:
+    elif "grab" in text or "Grab" in text:
         return 2, 0
     elif 'thirsty' in text:
         return 3, 0
@@ -85,9 +86,9 @@ if __name__ == "__main__":
     print("启动语音")
     if type==1:  # 导航前往地点
         pub_tts("开始导航"+msg)
-        client = rospy.ServiceProxy('/control/navigation/begin', Base)
-        rospy.wait_for_service('/control/navigation/begin')
-        resp = client(str(msg))
+        client = rospy.ServiceProxy('/control/web', Conn)
+        rospy.wait_for_service('/control/web')
+        resp = client("navigation_begin",str(msg),"")
         # os.system('rostopic pub /tts_text std_msgs/String "开始导航"')
         # client = rospy.ServiceProxy('/control/web', Conn)
         # rospy.wait_for_service('/control/web')
@@ -119,9 +120,9 @@ if __name__ == "__main__":
         #     pub.publish("航点错误，未知的"+msg[1])
         #     print("航点错误，未知的"+msg[1])
         pub_tts("开始导航"+msg[0])
-        client = rospy.ServiceProxy('/control/navigation/begin', Base)
-        rospy.wait_for_service('/control/navigation/begin')
-        resp = client(str(msg[0]))
+        client = rospy.ServiceProxy('/control/web', Conn)
+        rospy.wait_for_service('/control/web')
+        resp = client("navigation_begin",str(msg[0]),"")
         # os.system('rostopic pub /tts_text std_msgs/String "开始导航"')
         # client = rospy.ServiceProxy('/control/web', Conn)
         # rospy.wait_for_service('/control/web')
@@ -132,13 +133,13 @@ if __name__ == "__main__":
         resp = client2("grab", "0", "")
         pub_tts("抓取完成")
         pub_tts("开始导航"+msg[1])
-        client = rospy.ServiceProxy('/control/navigation/begin', Base)
-        rospy.wait_for_service('/control/navigation/begin')
-        resp = client(str(msg[1]))
+        resp = client("navigation_begin",str(msg[1]),"")
         # os.system('rostopic pub /tts_text std_msgs/String "开始导航"')
         # rospy.wait_for_service('/control/web')
         # resp = client("navigation_begin", id2, "")
         pub_tts("已经到达最终位置")
+	rospy.wait_for_service('/control/web')
+	resp = client("pass_obj", "0", "")
         # os.system('rostopic pub /tts_text std_msgs/String "已经到达位置"')
         resp = client("navigation_finish", 0, "")
     else:

@@ -98,7 +98,7 @@ class Controller:
         """保存航点。需传入地图id
 
         Args:
-            map_id (int): 地图ID
+            map_id (str): 地图ID
             label (str): 保存的航点ID
         """
         client = rospy.ServiceProxy('/control/mark/save', Conn)
@@ -106,7 +106,7 @@ class Controller:
         if params['use_tkinter'] and map_id == None:
             map_id = tkinterUI.t1.get()
             label = tkinterUI.t2.get()
-        resp = client("", int(map_id), label)
+        resp = client("", map_id, label)
         loginfo(resp.response)
 
     def navigation_init(self, map_id=None):
