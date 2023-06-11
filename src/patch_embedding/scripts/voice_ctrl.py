@@ -21,11 +21,13 @@ def get_text_type(text):
         return 2, 0
     elif '渴' in text:
         return 3, 0
+    elif '递' in text:
+        return 6, 0
     elif 'to' in text and 'then go to' in text:
         ind1 = text.index("to")
         ind2 = text.index("then")
         x = text.split()
-	t = []
+        t = []
         for i in range(len(x)-2):
             if x[i]=='to':
                 t.append(x[i+1])
@@ -46,6 +48,8 @@ def get_text_type(text):
         return 2, 0
     elif 'thirsty' in text:
         return 3, 0
+    elif "pass" in text:
+        return 6, 0
     return 0, 0
 
 def pub_tts(text):
@@ -138,10 +142,14 @@ if __name__ == "__main__":
         # rospy.wait_for_service('/control/web')
         # resp = client("navigation_begin", id2, "")
         pub_tts("已经到达最终位置")
-	rospy.wait_for_service('/control/web')
-	resp = client("pass_obj", "0", "")
+        rospy.wait_for_service('/control/web')
+        resp = client("pass_obj", "0", "")
         # os.system('rostopic pub /tts_text std_msgs/String "已经到达位置"')
         resp = client("navigation_finish", 0, "")
+    elif type==6:
+        pub_tts("开始递物")
+        client = rospy.ServiceProxy('/control/web', Conn)
+        resp = client("pass_obj", "0", "")
     else:
         pub_tts("我不理解你在说什么")
 
