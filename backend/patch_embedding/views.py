@@ -90,9 +90,10 @@ class Update(View):
             os.system("cd ~/SE/team03-project; git pull origin main > tmp")
             with open('/home/jinghongbin/SE/team03-project/tmp', encoding='utf-8') as f:
                 if f.read().startswith('已经是最新的。'):
-                    res['code'] = 200
-                else:
                     res['code'] = 400
+                    res['msg'] = '已经是最新版'
+                else:
+                    res['code'] = 200
             os.system("cd ~/SE/team03-project; rm tmp")
         except Exception as e:
             print(e)
