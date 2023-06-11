@@ -33,7 +33,7 @@
             <el-row>
 <!--             地图图片-->
               <el-col>
-                <el-image :src="require(`//home//jinghongbin//SE//team03-project//src//patch_embedding//maps//map`+ map.map_id + `.png`)" style="width: 100%"></el-image>
+                <el-image :src="require(`@/assets/`+ map.map_id + `.png`)" style="width: 100%"></el-image>
               </el-col>
             </el-row>
             <el-row style="padding-top: 10px">
@@ -106,7 +106,7 @@
         <el-row>
           <el-image
             style="width: 50%; height: 50%; padding-left: 25%"
-            :src="require(`//home//jinghongbin//SE//team03-project//src//patch_embedding//maps//map`+ this.map_id + `.png`)">
+            :src="require(`@/assets/`+ this.map_id + `.png`)">
           </el-image>
         </el-row>
 
@@ -121,6 +121,19 @@
             <el-table-column prop="label_id" label="航点id" witdh="100" align="center"></el-table-column>
             <el-table-column prop="label_name" label="航点名称" witdh="200" align="center"></el-table-column>
             <el-table-column prop="label_remark" label="备注信息" witdh="200" align="center"></el-table-column>
+            <el-table-column
+              label="操作"
+              witdh="100"
+              align="center">
+              <template slot-scope="scope">
+                <el-button
+                  @click.native.prevent="deleteRow(scope.label_id)"
+                  type="text"
+                  size="small">
+                  移除
+                </el-button>
+              </template>
+            </el-table-column>
           </el-table>
         </div>
 <!--        输入航点名称、备注-->
@@ -286,6 +299,17 @@ export default {
             this.$message.error(res.data.msg)
           }
         })
+    },
+    // 删除航点
+    deleteRow(label_id) {
+      var labelx = {label_id: label_id}
+      this.$axios.post(`http://localhost:8000/mark/delete/`, labelx)
+        .then(res=> {
+          if (res.data.code === 400) {
+            this.$message.error(res.data.msg)
+          }
+        })
+      this.getDetail(this.map_id)
     },
 
 
