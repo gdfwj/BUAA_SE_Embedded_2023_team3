@@ -56,7 +56,6 @@ class Mark:
         return BaseResponse("开始编辑")
 
     def save(self, req):
-        print(req.id, req.arg)
         mark_path = rospy.get_param("pkg_path") + '/marks/waypoints' + str(req.id) + '.xml'
         os.system('rosrun waterplus_map_tools wp_saver')
         os.system('mv ~/waypoints.xml ' + mark_path)
