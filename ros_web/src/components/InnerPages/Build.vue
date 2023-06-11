@@ -121,6 +121,19 @@
             <el-table-column prop="label_id" label="航点id" witdh="100" align="center"></el-table-column>
             <el-table-column prop="label_name" label="航点名称" witdh="200" align="center"></el-table-column>
             <el-table-column prop="label_remark" label="备注信息" witdh="200" align="center"></el-table-column>
+            <el-table-column
+              label="操作"
+              witdh="100"
+              align="center">
+              <template slot-scope="scope">
+                <el-button
+                  @click.native.prevent="deleteRow(scope.row)"
+                  type="text"
+                  size="small">
+                  移除
+                </el-button>
+              </template>
+            </el-table-column>
           </el-table>
         </div>
 <!--        输入航点名称、备注-->
@@ -286,6 +299,18 @@ export default {
             this.$message.error(res.data.msg)
           }
         })
+    },
+    // 删除航点
+    deleteRow(row) {
+      var labelx = {label_id: row.label_id}
+      console.log(labelx)
+      this.$axios.post(`http://localhost:8000/mark/delete/`, labelx)
+        .then(res=> {
+          if (res.data.code === 400) {
+            this.$message.error(res.data.msg)
+          }
+        })
+      this.getDetail(this.map_id)
     },
 
 
