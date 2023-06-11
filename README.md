@@ -171,7 +171,7 @@ export ROS_IP=192.168.8.201
 
 ## 参考资料
 
-[机器人官方包]: https://github.com/6-robot
-[SSH配置]: https://zhuanlan.zhihu.com/p/577082732
-[ROS主从机配置]: https://blog.csdn.net/zhanghm1995/article/details/106781954
+- 机器人官方包：https://github.com/6-robot
+- SSH配置：https://zhuanlan.zhihu.com/p/577082732
+- ROS主从机配置：https://blog.csdn.net/zhanghm1995/article/details/106781954
 
