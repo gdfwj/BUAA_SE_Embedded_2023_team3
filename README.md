@@ -95,6 +95,83 @@ sudo apt-get install ros-melodic-sound-play
 - `rplidar_ros`包参考：https://github.com/robopeak/rplidar_ros
 - `iai_kinect`2包参考：https://github.com/code-iai/iai_kinect2
 
+### python包的安装
 
+- 通过pip安装以下包，或在`scripts`目录下执行`pip3 install -r requirements.txt`。
 
-## 功能介绍
+```
+Pillow==9.5.0
+psutil==5.9.4
+PyYAML==6.0
+websockets==9.1
+```
+
+- 通过apt安装以下包：
+
+```bash
+sudo apt install python3-tk
+```
+
+### SSH配置
+
+- 机器人端和客户端都安装`openssh-server`和`openssh-client`。
+- 机器人端安装`sshpass`：
+
+```bash
+sudo apt install sshpass
+```
+
+### ROS主从机配置
+
+假设机器人主机的IP地址为：`192.168.8.201`，客户端主机的IP地址为：`192.168.8.100`，则各主机配置如下。
+
+#### 机器人主机
+
+- `~/.bashrc`文件中添加：
+
+```bash
+export ROS_HOSTNAME=192.168.8.201
+export ROS_MASTER_URI=http://192.168.8.201:11311
+export ROS_IP=192.168.8.201
+```
+
+- `/etc/hosts`文件中添加：
+
+```
+192.168.8.201   客户端主机hostname
+```
+
+#### 客户端主机
+
+- `~/.bashrc`文件中添加：
+
+```bash
+export ROS_HOSTNAME=192.168.8.100
+export ROS_MASTER_URI=http://192.168.8.201:11311
+export ROS_IP=192.168.8.201
+```
+
+- `/etc/hosts`文件中添加：
+
+```
+192.168.8.201   robot
+```
+
+## 项目运行
+
+### 机器人端
+
+在`scripts`目录下执行：`python3 controller.py`。
+
+### 客户端
+
+- 主控服务端：在`scripts`目录下执行`python3 controller_client.py`。
+- 后端：在`backend`目录下执行`python3 manage.py runserver`。
+- 前端：在`ros_web`目录下执行`yarn run dev`，打开http://localhost:8080即可。
+
+## 参考资料
+
+[机器人官方包]: https://github.com/6-robot
+[SSH配置]: https://zhuanlan.zhihu.com/p/577082732
+[ROS主从机配置]: https://blog.csdn.net/zhanghm1995/article/details/106781954
+
