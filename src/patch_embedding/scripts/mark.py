@@ -7,6 +7,7 @@ import multiprocessing
 from patch_embedding.srv import Base, BaseResponse, Conn, ConnResponse
 import os
 import io
+import re
 import signal
 from xml.dom.minidom import parse
 from util import terminate_process
@@ -60,14 +61,19 @@ class Mark:
         os.system('mv ~/waypoints.xml ' + mark_path)
 
         # 修改xml
-        doc = parse(mark_path)
-        root = doc.documentElement
-        points = root.getElementsByTagName('Waypoint')
-        for p in points:
-            if p.getElementsByTagName('Name')[0].childNodes[0].data == '1':
-                p.getElementsByTagName('Name')[0].childNodes[0].data = req.arg
-        with open(mark_path, 'w') as f:
-            doc.writexml(f, encoding='utf-8')
+        # doc = parse(mark_path)
+        # root = doc.documentElement
+        # points = root.getElementsByTagName('Waypoint')
+        # for p in points:
+        #     if p.getElementsByTagName('Name')[0].childNodes[0].data == '1':
+        #         p.getElementsByTagName('Name')[0].childNodes[0].data = req.arg
+        # with open(mark_path, 'w') as f:
+        #     doc.writexml(f, encoding='utf-8')
+        with open(mark_path, "r", encoding="utf-8") as f1, open("%s.bak" % mark_path, "w", encoding="utf-8") as f2:
+            for line in f1:
+                f2.write(re.sub("<Name>1</Name>", "<Name>" + req.arg + "</Name>", line))
+        os.remove(mark_path)
+        os.rename("%s.bak" % mark_path, mark_path)
 
         terminate_process(self.pid)
         terminate_process(self.map_server_pid)
