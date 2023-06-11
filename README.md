@@ -29,26 +29,26 @@
 #### 文件目录
 
 ```bash
-├── backend							# 后端代码
-├── docs								 # 文档
-├── images							  # 展示图片
-├── ros_web							# 前端代码
-├── src										# ROS包
-│   ├── patch_embedding				   # 主要功能包
-│   │   ├── config          # 配置文件
-│   │   ├── launch         # launch文件
-│   │   ├── maps           # 保存的地图
-│   │   ├── marks          # 保存的航点
-│   │   ├── scripts			# python代码
-│   │   ├── src                 # c代码
-│   │   └── srv                 # 自定义服务类型
-│   ├── rplidar_ros				                # 激光雷达包（官方包）
-│   ├── iai_kinect2								# 相机包（官方包）
-│   ├── waterplus_map_tools		  # 标注工具包（官方包）
-│   ├── wpb_home							# 机器人功能包（官方包）
-│   ├── wpr_simulation					 # 模拟包（官方包）
-│   └── xfyun_waterplus					# 语音包（官方包）
-└── test								   # 测试脚本
+├── backend                 # 后端代码
+├── docs                    # 文档
+├── images                  # 展示图片
+├── ros_web                 # 前端代码
+├── src                     # ROS包
+│   ├── patch_embedding         # 主要功能包
+│   │   ├── config                  # 配置文件
+│   │   ├── launch                  # launch文件
+│   │   ├── maps                    # 保存的地图
+│   │   ├── marks                   # 保存的航点
+│   │   ├── scripts                 # python代码
+│   │   ├── src                     # c代码
+│   │   └── srv                     # 自定义服务类型
+│   ├── rplidar_ros             # 激光雷达包（官方包）
+│   ├── iai_kinect2             # 相机包（官方包）
+│   ├── waterplus_map_tools     # 标注工具包（官方包）
+│   ├── wpb_home                # 机器人功能包（官方包）
+│   ├── wpr_simulation          # 模拟包（官方包）
+│   └── xfyun_waterplus         # 语音包（官方包）
+└── test                    # 测试脚本
 ```
 
 #### 系统架构
@@ -171,7 +171,7 @@ export ROS_IP=192.168.8.201
 
 ## 参考资料
 
-[机器人官方包]: https://github.com/6-robot
-[SSH配置]: https://zhuanlan.zhihu.com/p/577082732
-[ROS主从机配置]: https://blog.csdn.net/zhanghm1995/article/details/106781954
+- 机器人官方包：https://github.com/6-robot
+- SSH配置：https://zhuanlan.zhihu.com/p/577082732
+- ROS主从机配置：https://blog.csdn.net/zhanghm1995/article/details/106781954
 
