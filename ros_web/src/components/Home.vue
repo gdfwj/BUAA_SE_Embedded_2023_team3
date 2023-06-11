@@ -94,6 +94,7 @@ export default {
         .then(res => {
           if (res.data.code == 400) {
             this.$message.error(res.data.msg)
+            this.activeIndex = '1';
           }
           else {
             this.$message.success("成功初始化系统设置！")
@@ -106,12 +107,13 @@ export default {
       this.$axios.post(`http://localhost:8000/main/update/`)
         .then(res => {
           if (res.data.code == 400) {
-            this.$message.error(res.data.msg)
+            this.$message.success(res.data.msg)
           }
           else {
             this.$message.success("系统升级成功")
           }
         })
+      this.activeIndex = '1'
     }
   },
   components: {
