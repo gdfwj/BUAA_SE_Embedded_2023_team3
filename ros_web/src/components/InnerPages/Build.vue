@@ -244,7 +244,7 @@ export default {
             this.detail_info = res.data.data
           }
         })
-
+/*
       this.detail_info = [
         {
           label_id: 1,
@@ -257,12 +257,12 @@ export default {
           label_remark: 'hello 2'
         },
       ]
-
+*/
     },
 
     // 显示所有地图
     getMaps() {
-
+/*
       this.maps = [
         {
           map_id: 1,
@@ -277,7 +277,7 @@ export default {
           map_remark: 'hello map two!'
         },
       ]
-/*
+*/
       this.$axios.post(`http://localhost:8000/map/showAll/`)
         .then(res => {
           if (res.data.code === 400) {
@@ -287,7 +287,7 @@ export default {
             this.maps = res.data.data
           }
         })
-*/
+
       return this.maps
     },
     // 创建地图
