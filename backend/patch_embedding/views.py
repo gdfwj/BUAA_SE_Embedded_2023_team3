@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from datetime import datetime
 import asyncio
 import websockets
+import os
 
 PREFIX = "E:\\学习\\大三下\\软工\\项目开发\\"
 import sys
@@ -86,8 +87,13 @@ class Update(View):
     def post(self, request):
         res = {'code': 400, 'msg': '升级成功', 'data': []}
         try:
-            # TODO:
-            res['code'] = 200
+            os.system("cd ~/SE/team03-project; git pull origin main > tmp")
+            with open('/home/jinghongbin/SE/team03-project/tmp', encoding='utf-8') as f:
+                if f.read().startswith('已经是最新的。'):
+                    res['code'] = 200
+                else:
+                    res['code'] = 400
+            os.system("cd ~/SE/team03-project; rm tmp")
         except Exception as e:
             print(e)
             res['msg'] = '升级失败'
