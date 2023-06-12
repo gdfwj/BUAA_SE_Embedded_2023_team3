@@ -318,7 +318,7 @@ export default {
             this.$message.error(res.data.msg)
           }
         })
-      setTimeout(() => this.getDetail(this.map_id), 1000);
+      setTimeout(() => this.getDetail(this.map_id), 500);
     },
 
 
