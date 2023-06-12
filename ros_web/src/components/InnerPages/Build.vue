@@ -54,7 +54,8 @@
       </el-row>
       </div>
 <!--      新建地图弹窗-->
-      <el-dialog title="新建地图中..." :visible.sync="this.dialogVisible" width="50%" :append-to-body="true">
+      <el-dialog title="新建地图中..." :visible.sync="this.dialogVisible" width="50%" :append-to-body="true"
+      @close="dialogVisible=false;map_name='';map_remark='';">
         <el-row style="height: 80%; margin-left: 15%">
           <el-image
             style="width: 70%; height: 70%; padding-left: 8%; align-content: center"
@@ -67,9 +68,11 @@
           <el-col :span="2" style="text-align: center; margin-top:10px;">
             名称：
           </el-col>
-          <el-col :span="5">
+          <el-col :span="6">
             <el-input
+              min="1"
               placeholder="请输入地图名称"
+              clearable="ture"
               v-model="map_name">
             </el-input>
           </el-col>
@@ -81,11 +84,13 @@
           </el-col>
           <el-col :span="10">
             <el-input
+              clearable="ture"
               placeholder="请输入备注信息"
               v-model="map_remark">
             </el-input>
           </el-col>
         </el-row>
+
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
           <el-button type="primary" @click.native="saveMap(map_name, map_remark)" style="position: relative">确认提交</el-button>
@@ -93,7 +98,8 @@
       </el-dialog>
 
 <!--      地图信息编辑弹窗 -->
-      <el-dialog title="地图信息编辑" :visible.sync="dialogMark" width="60%">
+      <el-dialog title="地图信息编辑" :visible.sync="dialogMark" width="60%"
+                 @close="dialogMark=false;label_name='';label_remark='';">
         <el-row>
           <el-col :span="4" style="padding-left: 50px">
             <el-button round @click="createMark(map_id)">航点标记</el-button>
@@ -146,6 +152,7 @@
             </el-col>
             <el-col :span="5">
               <el-input
+                clearable="true"
                 placeholder="请输入标注名称"
                 v-model="label_name">
               </el-input>
@@ -158,6 +165,7 @@
             </el-col>
             <el-col :span="10">
               <el-input
+                clearable="true"
                 placeholder="请输入备注信息"
                 v-model="label_remark">
               </el-input>
@@ -166,7 +174,7 @@
         </div>
 
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogMark = false">取 消</el-button>
+          <el-button @click="dialogMark = false; label_remark=''; label_name='';">取 消</el-button>
           <el-button type="primary" @click="confirmMark(label_name, label_remark)" >保存航点</el-button>
         </div>
       </el-dialog>
@@ -310,13 +318,21 @@ export default {
             this.$message.error(res.data.msg)
           }
         })
-      this.getDetail(this.map_id)
+      setTimeout(() => this.getDetail(this.map_id), 1000);
     },
 
 
     //保存地图
     saveMap(map_name, map_remark) {
       console.log(map_name, map_remark)
+      if (map_name.length === 0) {
+        this.$message.error("地图名称不能为空")
+        return
+      }
+      else if (map_name.length > 10) {
+        this.$message.error("地图名称长度不能超过10")
+        return
+      }
       var map_info = {
         map_remark: map_remark,
         map_name: map_name
@@ -337,6 +353,14 @@ export default {
 
     // 保存航点 mark/save
     confirmMark(label_name, label_remark) {
+      if (label_name.length === 0) {
+        this.$message.error("航点名称不能为空")
+        return
+      }
+      else if (label_name.length > 10) {
+        this.$message.error("航点名称长度不能超过10")
+        return
+      }
       var mark = {
         label_name: label_name,
         label_remark: label_remark
