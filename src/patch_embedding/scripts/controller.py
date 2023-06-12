@@ -163,6 +163,7 @@ class Controller:
         self.navigation_begin(dst1)
         self.grab()
         self.navigation_begin(dst2)
+        self.pass_obj()
 
     def voice(self):
         vspace = String()
